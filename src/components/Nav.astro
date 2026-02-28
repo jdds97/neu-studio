@@ -1,0 +1,145 @@
+---
+const currentPath = Astro.url.pathname;
+
+const navLinks = [
+  { href: '/artistas', label: 'Artistas' },
+  { href: '/galeria', label: 'Galeria' },
+  { href: '/contacto', label: 'Contacto' },
+];
+---
+
+<header
+  id="main-nav"
+  class="fixed top-0 left-0 w-full z-10 transition-all duration-300 ease-in-out"
+>
+  <nav class="mx-auto flex items-center justify-between px-6 py-4 max-w-7xl">
+    <!-- Logo -->
+    <a
+      href="/"
+      class="font-display text-lg tracking-tight-display text-brand-dark hover:text-brand-blue transition-colors duration-300"
+    >
+      NEU STUDIO
+    </a>
+
+    <!-- Desktop nav links -->
+    <div class="hidden md:flex items-center gap-10">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class:list={[
+            'font-body text-[0.85rem] font-medium uppercase tracking-wide-label transition-colors duration-300',
+            currentPath === link.href || currentPath.startsWith(link.href + '/')
+              ? 'text-brand-blue'
+              : 'text-brand-dark hover:text-brand-blue',
+          ]}
+        >
+          {link.label}
+        </a>
+      ))}
+
+      <a
+        href="/reservar"
+        class="font-body text-[0.85rem] font-medium uppercase tracking-wide-label bg-brand-blue text-white px-6 py-3 hover:bg-brand-blue-hover transition-colors duration-300"
+      >
+        Reservar
+      </a>
+    </div>
+
+    <!-- Mobile hamburger button -->
+    <button
+      id="menu-open-btn"
+      class="md:hidden flex flex-col justify-center gap-[6px] p-2"
+      aria-label="Abrir menu de navegacion"
+      type="button"
+    >
+      <span class="block w-6 h-[2px] bg-brand-dark"></span>
+      <span class="block w-6 h-[2px] bg-brand-dark"></span>
+      <span class="block w-6 h-[2px] bg-brand-dark"></span>
+    </button>
+  </nav>
+</header>
+
+<!-- Mobile fullscreen menu -->
+<div
+  id="mobile-menu"
+  class="fixed inset-0 z-20 bg-white hidden flex-col items-center justify-center"
+>
+  <!-- Close button -->
+  <button
+    id="menu-close-btn"
+    class="absolute top-5 right-6 p-2"
+    aria-label="Cerrar menu de navegacion"
+    type="button"
+  >
+    <div class="relative w-6 h-6">
+      <span class="absolute top-1/2 left-0 w-6 h-[2px] bg-brand-dark -translate-y-1/2 rotate-45"></span>
+      <span class="absolute top-1/2 left-0 w-6 h-[2px] bg-brand-dark -translate-y-1/2 -rotate-45"></span>
+    </div>
+  </button>
+
+  <!-- Mobile nav links -->
+  <nav class="flex flex-col items-center gap-8">
+    {navLinks.map((link) => (
+      <a
+        href={link.href}
+        class:list={[
+          'font-display text-2xl tracking-tight-display transition-colors duration-300',
+          currentPath === link.href || currentPath.startsWith(link.href + '/')
+            ? 'text-brand-blue'
+            : 'text-brand-dark hover:text-brand-blue',
+        ]}
+      >
+        {link.label}
+      </a>
+    ))}
+
+    <a
+      href="/reservar"
+      class="font-body text-[0.85rem] font-medium uppercase tracking-wide-label bg-brand-blue text-white px-8 py-4 mt-4 hover:bg-brand-blue-hover transition-colors duration-300"
+    >
+      Reservar
+    </a>
+  </nav>
+</div>
+
+<!-- Scroll behavior -->
+<script>
+  const nav = document.getElementById('main-nav');
+
+  function handleScroll() {
+    if (!nav) return;
+
+    if (window.scrollY > 100) {
+      nav.classList.add('bg-white/90', 'backdrop-blur-md', 'shadow-sm');
+    } else {
+      nav.classList.remove('bg-white/90', 'backdrop-blur-md', 'shadow-sm');
+    }
+  }
+
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  handleScroll();
+</script>
+
+<!-- Mobile menu toggle -->
+<script>
+  const openBtn = document.getElementById('menu-open-btn');
+  const closeBtn = document.getElementById('menu-close-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  function openMenu() {
+    if (!mobileMenu) return;
+    mobileMenu.classList.remove('hidden');
+    mobileMenu.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenu() {
+    if (!mobileMenu) return;
+    mobileMenu.classList.remove('flex');
+    mobileMenu.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  openBtn?.addEventListener('click', openMenu);
+  closeBtn?.addEventListener('click', closeMenu);
+</script>

@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import Nav from '../components/Nav.astro';
 
 interface Props {
   title: string;
@@ -19,6 +20,7 @@ const { title, description = 'Neu Studio - Estudio de tatuaje en Dos Hermanas' }
     <title>{title} | Neu Studio</title>
   </head>
   <body class="font-body text-brand-dark bg-white">
+    <Nav />
     <slot />
   </body>
 </html>
