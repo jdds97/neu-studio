@@ -10,7 +10,7 @@ const navLinks = [
 
 <header
   id="main-nav"
-  class="fixed top-0 left-0 w-full z-10 transition-all duration-300 ease-in-out"
+  class="fixed top-0 left-0 w-full z-10 bg-white transition-shadow duration-300 ease-in-out"
 >
   <nav class="mx-auto flex items-center justify-between px-6 py-4 max-w-7xl">
     <!-- Logo -->
@@ -109,10 +109,10 @@ const navLinks = [
   function handleScroll() {
     if (!nav) return;
 
-    if (window.scrollY > 100) {
-      nav.classList.add('bg-white/90', 'backdrop-blur-md', 'shadow-sm');
+    if (window.scrollY > 50) {
+      nav.classList.add('shadow-sm');
     } else {
-      nav.classList.remove('bg-white/90', 'backdrop-blur-md', 'shadow-sm');
+      nav.classList.remove('shadow-sm');
     }
   }
 
