@@ -1,0 +1,92 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import yaml from 'js-yaml';
+
+interface Testimonial {
+  clientName: string;
+  text: string;
+  stars: number;
+  source: string;
+}
+
+const testimonialsDir = path.join(process.cwd(), 'src/content/testimonials');
+const files = fs.readdirSync(testimonialsDir).filter((f: string) => f.endsWith('.yaml'));
+
+const testimonials: Testimonial[] = files.map((file: string) => {
+  const raw = fs.readFileSync(path.join(testimonialsDir, file), 'utf-8');
+  const data = yaml.load(raw) as Record<string, unknown>;
+  return {
+    clientName: String(data.clientName || ''),
+    text: String(data.text || ''),
+    stars: Number(data.stars ?? 5),
+    source: String(data.source || 'google'),
+  };
+});
+
+function renderStars(count: number): string {
+  return '★'.repeat(count);
+}
+
+function sourceLabel(source: string): string {
+  const labels: Record<string, string> = {
+    google: 'Google',
+    instagram: 'Instagram',
+  };
+  return labels[source] || source;
+}
+---
+
+<section id="testimonios" class="py-24 bg-brand-light">
+  <div class="px-6 md:px-12">
+    <span class="block font-accent text-xs tracking-wider-label uppercase text-brand-gray mb-4">
+      Testimonios
+    </span>
+
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-16 gap-6">
+      <h2 class="font-display text-[clamp(2rem,4vw,3.5rem)] tracking-tight-display">
+        Lo que dicen nuestros clientes
+      </h2>
+
+      {/* Google rating badge */}
+      <div class="flex-shrink-0">
+        <span class="block font-display text-4xl tracking-tight-display text-brand-dark">
+          5.0 <span class="text-brand-blue">★</span>
+        </span>
+        <span class="block font-accent text-xs tracking-wide-label uppercase text-brand-gray mt-1">
+          en Google
+        </span>
+      </div>
+    </div>
+  </div>
+
+  {/* Horizontal scrollable container */}
+  <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 px-6 md:px-12 pb-4 scrollbar-hide">
+    {testimonials.map((t) => (
+      <div class="min-w-[300px] md:min-w-[400px] flex-shrink-0 p-8 bg-white snap-start">
+        <span class="block text-brand-blue text-sm mb-4" aria-label={`${t.stars} estrellas`}>
+          {renderStars(t.stars)}
+        </span>
+        <p class="font-body text-base italic mb-4">
+          "{t.text}"
+        </p>
+        <span class="block font-accent text-xs tracking-wide-label uppercase text-brand-dark">
+          {t.clientName}
+        </span>
+        <span class="block font-accent text-xs tracking-wide-label uppercase text-brand-gray mt-1">
+          {sourceLabel(t.source)}
+        </span>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+</style>
