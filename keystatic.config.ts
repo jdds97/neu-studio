@@ -11,6 +11,7 @@ const STYLES = [
   { label: 'Florales', value: 'florales' },
   { label: 'Microrealismo', value: 'microrealismo' },
   { label: 'Curados', value: 'curados' },
+  { label: 'General', value: 'general' },
 ] as const;
 
 export default config({
