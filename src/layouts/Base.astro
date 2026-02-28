@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 import BookingButton from '../components/BookingButton.astro';
 
@@ -24,6 +25,7 @@ const { title, description = 'Neu Studio - Estudio de tatuaje en Dos Hermanas' }
   <body class="font-body text-brand-dark bg-white">
     <Nav />
     <slot />
+    <Footer />
     <BookingButton />
     <WhatsAppButton />
   </body>

@@ -1,0 +1,49 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-white">
+  <div class="py-16 px-6 md:px-12 border-t border-brand-border">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+      <!-- Column 1: Brand + Address -->
+      <div>
+        <p class="font-display text-lg tracking-tight-display text-brand-dark">NEU STUDIO</p>
+        <p class="font-body text-sm text-brand-gray mt-3">
+          Dos Hermanas, Sevilla<br />
+          España
+        </p>
+      </div>
+
+      <!-- Column 2: Navigation -->
+      <nav>
+        <ul class="flex flex-col gap-3">
+          <li><a href="/#artistas" class="font-body text-sm text-brand-gray hover:text-brand-dark transition-colors">Artistas</a></li>
+          <li><a href="/#galeria" class="font-body text-sm text-brand-gray hover:text-brand-dark transition-colors">Galeria</a></li>
+          <li><a href="/reservar" class="font-body text-sm text-brand-gray hover:text-brand-dark transition-colors">Reservar</a></li>
+          <li><a href="/contacto" class="font-body text-sm text-brand-gray hover:text-brand-dark transition-colors">Contacto</a></li>
+        </ul>
+      </nav>
+
+      <!-- Column 3: Social -->
+      <div>
+        <ul class="flex flex-col gap-3">
+          <li><a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="font-accent text-xs tracking-wide-label uppercase text-brand-gray hover:text-brand-blue transition-colors">Instagram</a></li>
+          <li><a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" class="font-accent text-xs tracking-wide-label uppercase text-brand-gray hover:text-brand-blue transition-colors">TikTok</a></li>
+          <li><a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="font-accent text-xs tracking-wide-label uppercase text-brand-gray hover:text-brand-blue transition-colors">Facebook</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom row -->
+    <div class="border-t border-brand-border pt-8 mt-8 flex flex-col sm:flex-row justify-between gap-4">
+      <p class="font-body text-xs text-brand-gray">&copy; {year} Neu Studio</p>
+      <div class="flex gap-4 font-body text-xs text-brand-gray">
+        <a href="/aviso-legal" class="hover:text-brand-dark transition-colors">Aviso legal</a>
+        <span>|</span>
+        <a href="/privacidad" class="hover:text-brand-dark transition-colors">Privacidad</a>
+        <span>|</span>
+        <a href="/cookies" class="hover:text-brand-dark transition-colors">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
