@@ -1,4 +1,5 @@
 ---
+import { ViewTransitions } from 'astro:transitions';
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -8,9 +9,11 @@ import BookingButton from '../components/BookingButton.astro';
 interface Props {
   title: string;
   description?: string;
+  image?: string;
 }
 
-const { title, description = 'Neu Studio - Estudio de tatuaje en Dos Hermanas' } = Astro.props;
+const { title, description = 'Neu Studio - Estudio de tatuaje en Dos Hermanas, Sevilla. Tatuajes personalizados, fineline, realismo y mas.', image = '/images/og-default.jpg' } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
@@ -21,6 +24,42 @@ const { title, description = 'Neu Studio - Estudio de tatuaje en Dos Hermanas' }
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title} | Neu Studio</title>
+    <ViewTransitions />
+
+    <!-- Canonical -->
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={`${title} | Neu Studio`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={new URL(image, Astro.site)} />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:site_name" content="Neu Studio" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} | Neu Studio`} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(image, Astro.site)} />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "TattooParlor",
+      "name": "Neu Studio",
+      "description": description,
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Dos Hermanas",
+        "addressRegion": "Sevilla",
+        "addressCountry": "ES"
+      },
+      "url": "https://neustudio.es",
+      "image": new URL(image, Astro.site).toString(),
+      "priceRange": "$$"
+    })} />
   </head>
   <body class="font-body text-brand-dark bg-white">
     <Nav />
@@ -28,5 +67,9 @@ const { title, description = 'Neu Studio - Estudio de tatuaje en Dos Hermanas' }
     <Footer />
     <BookingButton />
     <WhatsAppButton />
+    <script>
+      import '../scripts/smooth-scroll';
+      import '../scripts/scroll-animations';
+    </script>
   </body>
 </html>
