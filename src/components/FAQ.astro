@@ -1,0 +1,98 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+
+interface FAQItem {
+  question: string;
+  answer: string;
+  order: number;
+}
+
+const faqDir = path.join(process.cwd(), 'src/content/faq');
+const files = fs.readdirSync(faqDir).filter((f: string) => f.endsWith('.mdoc'));
+
+const faqs: FAQItem[] = files.map((file: string) => {
+  const raw = fs.readFileSync(path.join(faqDir, file), 'utf-8');
+  const match = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  if (!match) return null;
+
+  const frontmatter: Record<string, string> = {};
+  match[1].split('\n').forEach((line: string) => {
+    const idx = line.indexOf(':');
+    if (idx > 0) {
+      const key = line.slice(0, idx).trim();
+      const val = line.slice(idx + 1).trim();
+      frontmatter[key] = val;
+    }
+  });
+
+  return {
+    question: frontmatter.question || '',
+    answer: match[2].trim(),
+    order: parseInt(frontmatter.order || '0', 10),
+  };
+}).filter(Boolean) as FAQItem[];
+
+faqs.sort((a, b) => a.order - b.order);
+---
+
+<section id="faq" class="py-24 px-6 md:px-12">
+  <div class="max-w-3xl mx-auto">
+    <span class="block font-accent text-xs tracking-wider-label uppercase text-brand-gray mb-4">
+      FAQ
+    </span>
+    <h2 class="font-display text-[clamp(2rem,4vw,3.5rem)] tracking-tight-display mb-16">
+      Preguntas frecuentes
+    </h2>
+
+    <div>
+      {faqs.map((faq) => (
+        <div class="border-b border-brand-border">
+          <button
+            data-faq-toggle
+            class="w-full flex justify-between items-center py-6 text-left cursor-pointer"
+            type="button"
+          >
+            <span class="font-body text-base font-medium text-brand-dark pr-4">
+              {faq.question}
+            </span>
+            <span
+              data-faq-icon
+              class="text-brand-gray text-xl flex-shrink-0 transition-transform duration-300 select-none"
+            >
+              +
+            </span>
+          </button>
+          <div
+            class="overflow-hidden transition-[max-height] duration-300 ease-in-out hidden"
+            style="max-height: 0;"
+          >
+            <p class="font-body text-sm text-brand-gray pb-6">
+              {faq.answer}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll('[data-faq-toggle]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const answer = btn.nextElementSibling as HTMLElement;
+      const icon = btn.querySelector('[data-faq-icon]');
+      if (!answer || !icon) return;
+
+      if (answer.classList.contains('hidden')) {
+        answer.classList.remove('hidden');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+        icon.textContent = '\u2212';
+      } else {
+        answer.style.maxHeight = '0';
+        setTimeout(() => answer.classList.add('hidden'), 300);
+        icon.textContent = '+';
+      }
+    });
+  });
+</script>
