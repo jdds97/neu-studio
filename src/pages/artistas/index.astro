@@ -1,0 +1,79 @@
+---
+import Base from '../../layouts/Base.astro';
+import ArtistCard from '../../components/ArtistCard.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+interface Artist {
+  slug: string;
+  name: string;
+  photo: string;
+  specialties: string[];
+  order: number;
+}
+
+const artistsDir = path.join(process.cwd(), 'src/content/artists');
+const files = fs.readdirSync(artistsDir).filter((f: string) => f.endsWith('.mdoc'));
+
+const artists: Artist[] = files.map((file: string) => {
+  const raw = fs.readFileSync(path.join(artistsDir, file), 'utf-8');
+  const match = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  if (!match) return null;
+
+  const fm = match[1];
+
+  // Parse name
+  const nameMatch = fm.match(/^name:\s*(.+)$/m);
+  const name = nameMatch ? nameMatch[1].trim() : '';
+
+  // Parse photo
+  const photoMatch = fm.match(/^photo:\s*(.+)$/m);
+  const photo = photoMatch ? photoMatch[1].trim().replace(/^['"]|['"]$/g, '') : '';
+
+  // Parse order
+  const orderMatch = fm.match(/^order:\s*(\d+)/m);
+  const order = orderMatch ? parseInt(orderMatch[1], 10) : 0;
+
+  // Parse specialties (YAML array)
+  const specialties: string[] = [];
+  const specSection = fm.match(/^specialties:\s*\n((?:\s+-\s+.+\n?)*)/m);
+  if (specSection) {
+    const items = specSection[1].matchAll(/^\s+-\s+(.+)$/gm);
+    for (const item of items) {
+      specialties.push(item[1].trim());
+    }
+  }
+
+  return {
+    slug: file.replace('.mdoc', ''),
+    name,
+    photo,
+    specialties,
+    order,
+  };
+}).filter(Boolean) as Artist[];
+
+artists.sort((a, b) => a.order - b.order);
+---
+
+<Base title="Artistas">
+  <main class="pt-24 pb-16 px-6 md:px-12">
+    <span class="block font-accent text-xs tracking-wider-label uppercase text-brand-gray mb-4">
+      ARTISTAS
+    </span>
+    <h1 class="font-display text-[clamp(2rem,4vw,3.5rem)] tracking-tight-display mb-16">
+      Nuestro equipo
+    </h1>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-1">
+      {artists.map((artist) => (
+        <ArtistCard
+          name={artist.name}
+          slug={artist.slug}
+          photo={artist.photo}
+          specialties={artist.specialties}
+        />
+      ))}
+    </div>
+  </main>
+</Base>
