@@ -1,0 +1,54 @@
+---
+interface Props {
+  title?: string;
+  subtitle?: string;
+}
+
+const { title = 'NEU STUDIO', subtitle = 'Estudio de tatuaje en Dos Hermanas' } = Astro.props;
+---
+
+<section class="relative h-screen flex flex-col items-center justify-center overflow-hidden">
+  <!-- Blue glow atmospheric effect -->
+  <div
+    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[700px] rounded-full blur-[150px] bg-brand-blue/15 pointer-events-none"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Grain texture overlay -->
+  <div
+    class="absolute inset-0 pointer-events-none opacity-[0.03] mix-blend-overlay"
+    style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E&quot;);"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Title -->
+  <h1 class="font-display text-[clamp(3rem,8vw,6rem)] tracking-tight-display text-brand-dark text-center leading-none z-[1]">
+    {title}
+  </h1>
+
+  <!-- Subtitle -->
+  <p class="font-accent text-xs md:text-sm tracking-wider-label uppercase text-brand-gray mt-6 z-[1]">
+    {subtitle}
+  </p>
+
+  <!-- CTA buttons -->
+  <div class="flex gap-4 mt-10 z-[1]">
+    <a
+      href="/reservar"
+      class="bg-brand-blue text-white font-body text-sm font-medium px-8 py-4 hover:bg-brand-blue-hover transition-colors"
+    >
+      Reservar cita
+    </a>
+    <a
+      href="/galeria"
+      class="border border-brand-dark text-brand-dark font-body text-sm font-medium px-8 py-4 hover:bg-brand-dark hover:text-white transition-colors"
+    >
+      Ver galeria
+    </a>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 z-[1]" aria-hidden="true">
+    <div class="w-[1px] h-12 bg-brand-gray/40 animate-pulse"></div>
+  </div>
+</section>
