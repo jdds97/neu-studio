@@ -1,0 +1,81 @@
+---
+interface GalleryItem {
+  slug: string;
+  title: string;
+  image: string;
+  artist: string;
+  style: string;
+}
+
+interface Props {
+  items: GalleryItem[];
+  showOverlay?: boolean;
+}
+
+const { items, showOverlay = true } = Astro.props;
+---
+
+<div class="pswp-gallery grid grid-cols-2 md:grid-cols-3 gap-1">
+  {items.map((item) => (
+    <a
+      class="pswp-gallery__item relative overflow-hidden group cursor-pointer block"
+      data-pswp-src={item.image}
+      data-pswp-width="1200"
+      data-pswp-height="1200"
+      data-style={item.style}
+      href={item.image}
+    >
+      <img
+        src={item.image}
+        alt={item.title}
+        loading="lazy"
+        class="w-full h-full object-cover aspect-[3/4] transition-transform duration-300 group-hover:scale-[1.02]"
+      />
+      {showOverlay && (
+        <div
+          class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end"
+          style="background: linear-gradient(0deg, rgba(0,0,0,.85) 0%, rgba(0,0,0,.3) 50%, rgba(0,0,0,.15) 65%, rgba(0,0,0,.075) 75.5%, rgba(0,0,0,.037) 82.85%, rgba(0,0,0,.019) 88%, transparent 100%);"
+        >
+          <div class="p-4 w-full">
+            <span class="font-accent text-xs tracking-wide-label uppercase text-white block">
+              {item.artist}
+            </span>
+            <span class="font-accent text-[0.65rem] tracking-wide-label uppercase text-brand-gray mt-1 block">
+              {item.style}
+            </span>
+          </div>
+        </div>
+      )}
+    </a>
+  ))}
+</div>
+
+<script>
+  import PhotoSwipe from 'photoswipe';
+  import 'photoswipe/style.css';
+
+  document.querySelectorAll('.pswp-gallery').forEach((gallery) => {
+    gallery.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = (e.target as HTMLElement).closest('.pswp-gallery__item');
+      if (!target) return;
+
+      const items = [...gallery.querySelectorAll('.pswp-gallery__item')];
+      const index = items.indexOf(target);
+
+      const dataSource = items.map((item) => ({
+        src: item.getAttribute('data-pswp-src') || '',
+        width: parseInt(item.getAttribute('data-pswp-width') || '1200'),
+        height: parseInt(item.getAttribute('data-pswp-height') || '1200'),
+      }));
+
+      const pswp = new PhotoSwipe({
+        dataSource,
+        index,
+        bgOpacity: 0.95,
+        showHideAnimationType: 'fade',
+      });
+      pswp.init();
+    });
+  });
+</script>

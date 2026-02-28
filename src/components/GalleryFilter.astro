@@ -1,0 +1,57 @@
+---
+const styles = [
+  'Todos', 'Fineline', 'Realismo', 'Color', 'Blackwork',
+  'Composicion', 'Freehand', 'Mascotas', 'Florales', 'Microrealismo', 'Curados'
+];
+---
+
+<div class="flex overflow-x-auto gap-2 pb-4 mb-8 gallery-filter-scroll">
+  {styles.map((style, i) => (
+    <button
+      data-filter={style.toLowerCase()}
+      class:list={[
+        'font-accent text-xs tracking-wide-label uppercase px-4 py-2 border whitespace-nowrap shrink-0 transition-colors duration-200',
+        i === 0
+          ? 'bg-brand-dark text-white border-brand-dark'
+          : 'border-brand-border text-brand-gray',
+      ]}
+    >
+      {style}
+    </button>
+  ))}
+</div>
+
+<style>
+  .gallery-filter-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  .gallery-filter-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>
+
+<script>
+  document.querySelectorAll('[data-filter]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const style = btn.getAttribute('data-filter');
+
+      // Toggle active state on buttons
+      document.querySelectorAll('[data-filter]').forEach((b) => {
+        b.classList.remove('bg-brand-dark', 'text-white', 'border-brand-dark');
+        b.classList.add('border-brand-border', 'text-brand-gray');
+      });
+      btn.classList.add('bg-brand-dark', 'text-white', 'border-brand-dark');
+      btn.classList.remove('border-brand-border', 'text-brand-gray');
+
+      // Show/hide items
+      document.querySelectorAll('[data-style]').forEach((item) => {
+        if (style === 'todos' || item.getAttribute('data-style') === style) {
+          (item as HTMLElement).classList.remove('hidden');
+        } else {
+          (item as HTMLElement).classList.add('hidden');
+        }
+      });
+    });
+  });
+</script>

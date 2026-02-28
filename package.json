@@ -17,8 +17,13 @@
     "@keystatic/astro": "^5.0.6",
     "@keystatic/core": "^0.5.48",
     "astro": "^5.18.0",
+    "js-yaml": "^4.1.1",
+    "photoswipe": "^5.4.4",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "tailwindcss": "^3.4.19"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9"
   }
 }

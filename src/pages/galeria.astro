@@ -1,0 +1,54 @@
+---
+import Base from '../layouts/Base.astro';
+import GalleryFilter from '../components/GalleryFilter.astro';
+import GalleryGrid from '../components/GalleryGrid.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+import yaml from 'js-yaml';
+
+// Read gallery items from YAML files
+const galleryDir = path.join(process.cwd(), 'src/content/gallery');
+let items: { slug: string; title: string; image: string; artist: string; style: string }[] = [];
+
+try {
+  const files = fs.readdirSync(galleryDir).filter((f: string) => f.endsWith('.yaml') || f.endsWith('.yml'));
+  items = files.map((file: string) => {
+    const raw = fs.readFileSync(path.join(galleryDir, file), 'utf-8');
+    const data = yaml.load(raw) as Record<string, any>;
+    const slug = file.replace(/\.ya?ml$/, '');
+    return {
+      slug,
+      title: data.title || slug,
+      image: data.image || '',
+      artist: data.artist || '',
+      style: data.style || '',
+    };
+  });
+} catch {
+  // Gallery directory empty or unreadable — items stays empty
+}
+---
+
+<Base title="Galeria">
+  <main class="pt-24 pb-16 px-6 md:px-12 max-w-7xl mx-auto">
+    <span class="font-accent text-xs tracking-wide-label uppercase text-brand-gray block mb-3">
+      Galeria
+    </span>
+    <h1 class="font-display text-3xl md:text-5xl tracking-tight-display text-brand-dark mb-10">
+      Nuestros trabajos
+    </h1>
+
+    {items.length > 0 ? (
+      <>
+        <GalleryFilter />
+        <GalleryGrid items={items} />
+      </>
+    ) : (
+      <div class="text-center py-24">
+        <p class="font-accent text-sm tracking-wide-label uppercase text-brand-gray">
+          Proximamente subieremos nuestros trabajos
+        </p>
+      </div>
+    )}
+  </main>
+</Base>
