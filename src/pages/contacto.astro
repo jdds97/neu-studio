@@ -1,0 +1,174 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Contacto" description="Contacta con Neu Studio - Estudio de tatuaje en Dos Hermanas, Sevilla">
+  <main class="pt-24 pb-16 px-6 md:px-12">
+    <p class="font-accent text-xs tracking-wider-label uppercase text-brand-gray mb-4">CONTACTO</p>
+    <h1 class="font-display text-[clamp(2rem,4vw,3.5rem)] tracking-tight-display mb-12">
+      Hablemos
+    </h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 mb-16">
+      <!-- Form -->
+      <div>
+        <form id="contact-form" class="space-y-6">
+          <div>
+            <label for="name" class="block font-accent text-xs tracking-wide-label uppercase text-brand-gray mb-2">
+              Nombre *
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              required
+              class="w-full border border-brand-border bg-transparent font-body text-sm px-4 py-3 focus:border-brand-blue focus:outline-none transition-colors"
+            />
+          </div>
+
+          <div>
+            <label for="email" class="block font-accent text-xs tracking-wide-label uppercase text-brand-gray mb-2">
+              Email *
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              class="w-full border border-brand-border bg-transparent font-body text-sm px-4 py-3 focus:border-brand-blue focus:outline-none transition-colors"
+            />
+          </div>
+
+          <div>
+            <label for="phone" class="block font-accent text-xs tracking-wide-label uppercase text-brand-gray mb-2">
+              Telefono
+            </label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              class="w-full border border-brand-border bg-transparent font-body text-sm px-4 py-3 focus:border-brand-blue focus:outline-none transition-colors"
+            />
+          </div>
+
+          <div>
+            <label for="message" class="block font-accent text-xs tracking-wide-label uppercase text-brand-gray mb-2">
+              Mensaje *
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              required
+              class="w-full border border-brand-border bg-transparent font-body text-sm px-4 py-3 min-h-[150px] focus:border-brand-blue focus:outline-none transition-colors resize-vertical"
+            ></textarea>
+          </div>
+
+          <div id="success-msg" class="hidden font-body text-sm text-green-600">
+            Mensaje enviado. Te contactaremos pronto.
+          </div>
+
+          <div id="error-msg" class="hidden font-body text-sm text-red-600">
+            Error al enviar. Intentalo de nuevo o contactanos por WhatsApp.
+          </div>
+
+          <button
+            type="submit"
+            id="submit-btn"
+            class="bg-brand-blue text-white font-body text-sm font-medium px-8 py-4 w-full hover:bg-brand-blue-hover transition-colors disabled:opacity-50"
+          >
+            Enviar mensaje
+          </button>
+        </form>
+      </div>
+
+      <!-- Info -->
+      <div class="space-y-6">
+        <div>
+          <p class="font-accent text-xs tracking-wide-label uppercase text-brand-gray mb-1">DIRECCION</p>
+          <p class="font-body text-sm text-brand-dark">Dos Hermanas, Sevilla</p>
+        </div>
+
+        <div>
+          <p class="font-accent text-xs tracking-wide-label uppercase text-brand-gray mb-1">TELEFONO</p>
+          <p class="font-body text-sm text-brand-dark">+34 XXX XXX XXX</p>
+        </div>
+
+        <div>
+          <p class="font-accent text-xs tracking-wide-label uppercase text-brand-gray mb-1">WHATSAPP</p>
+          <p class="font-body text-sm text-brand-dark">+34 XXX XXX XXX</p>
+        </div>
+
+        <div>
+          <p class="font-accent text-xs tracking-wide-label uppercase text-brand-gray mb-1">EMAIL</p>
+          <p class="font-body text-sm text-brand-dark">info@neustudio.es</p>
+        </div>
+
+        <div>
+          <p class="font-accent text-xs tracking-wide-label uppercase text-brand-gray mb-1">HORARIO</p>
+          <p class="font-body text-sm text-brand-dark">L-V: 10:00-20:00</p>
+          <p class="font-body text-sm text-brand-dark">S: 10:00-14:00</p>
+        </div>
+
+        <div class="pt-4">
+          <p class="font-accent text-xs tracking-wide-label uppercase text-brand-gray mb-3">REDES SOCIALES</p>
+          <div class="flex gap-6">
+            <a href="https://instagram.com/neustudio" target="_blank" rel="noopener noreferrer" class="font-body text-sm text-brand-blue hover:underline">Instagram</a>
+            <a href="https://tiktok.com/@neustudio" target="_blank" rel="noopener noreferrer" class="font-body text-sm text-brand-blue hover:underline">TikTok</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Google Maps -->
+    <div class="w-full">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25461.38469!2d-5.9347!3d37.2837!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd127086c1a0e00f%3A0x40463fd8ca0e180!2sDos%20Hermanas%2C%20Sevilla!5e0!3m2!1ses!2ses"
+        width="100%"
+        height="400"
+        style="border:0; filter: grayscale(100%);"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        class="w-full h-[400px]"
+      ></iframe>
+    </div>
+  </main>
+</Base>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+  const successMsg = document.getElementById('success-msg');
+  const errorMsg = document.getElementById('error-msg');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!submitBtn) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Enviando...';
+
+    const formData = new FormData(form);
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (res.ok) {
+        form.reset();
+        successMsg?.classList.remove('hidden');
+        errorMsg?.classList.add('hidden');
+      } else {
+        throw new Error('Error');
+      }
+    } catch {
+      errorMsg?.classList.remove('hidden');
+      successMsg?.classList.add('hidden');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Enviar mensaje';
+    }
+  });
+</script>
