@@ -1,6 +1,8 @@
 ---
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import BookingButton from '../components/BookingButton.astro';
 
 interface Props {
   title: string;
@@ -22,5 +24,7 @@ const { title, description = 'Neu Studio - Estudio de tatuaje en Dos Hermanas' }
   <body class="font-body text-brand-dark bg-white">
     <Nav />
     <slot />
+    <BookingButton />
+    <WhatsAppButton />
   </body>
 </html>

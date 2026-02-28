@@ -1,0 +1,60 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Reservar cita">
+  <main class="pt-24 pb-16 px-6 md:px-12">
+    <p class="font-accent text-xs tracking-wider-label uppercase text-brand-gray mb-4">RESERVAS</p>
+    <h1 class="font-display text-[clamp(2rem,4vw,3.5rem)] tracking-tight-display mb-4">
+      Reservar cita
+    </h1>
+    <p class="font-body text-sm text-brand-gray mb-12 max-w-lg">
+      Elige artista, tipo de sesion y horario. Las sesiones varian entre 2 y 8 horas segun el trabajo.
+    </p>
+
+    <!-- Cal.com inline embed placeholder -->
+    <div id="cal-embed" class="min-h-[600px] border border-brand-border"></div>
+  </main>
+</Base>
+
+<script is:inline>
+  // Cal.com embed - replace CAL_LINK with actual link when available
+  (function (C, A, L) {
+    let p = function (a, ar) { a.q.push(ar); };
+    let d = C.document;
+    C.Cal = C.Cal || function () {
+      let cal = C.Cal;
+      let ar = arguments;
+      if (!cal.loaded) {
+        cal.ns = {};
+        cal.q = cal.q || [];
+        d.head.appendChild(d.createElement('script')).src = A;
+        cal.loaded = true;
+      }
+      if (ar[0] === L) {
+        const api = function () { p(api, arguments); };
+        const namespace = ar[1];
+        api.q = api.q || [];
+        if (typeof namespace === 'string') {
+          cal.ns[namespace] = cal.ns[namespace] || api;
+          p(cal.ns[namespace], ar);
+          p(cal, ['initNamespace', namespace]);
+        } else p(cal, ar);
+        return;
+      }
+      p(cal, ar);
+    };
+  })(window, 'https://app.cal.com/embed/embed.js', 'init');
+
+  Cal('init', { origin: 'https://app.cal.com' });
+  Cal('inline', {
+    elementOrSelector: '#cal-embed',
+    calLink: 'REPLACE_WITH_CAL_LINK',
+    layout: 'month_view',
+    config: { theme: 'light' },
+  });
+  Cal('ui', {
+    theme: 'light',
+    styles: { branding: { brandColor: '#2A2AEE' } },
+  });
+</script>
