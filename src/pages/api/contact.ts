@@ -14,12 +14,19 @@ export const POST: APIRoute = async ({ request, locals }) => {
     });
   }
 
-  // Access Cloudflare Worker env vars via locals.runtime
+  // Access Cloudflare env vars via locals.runtime
   const runtime = (locals as any).runtime;
   const resendKey = runtime?.env?.RESEND_API_KEY;
   const contactEmail = runtime?.env?.CONTACT_EMAIL;
 
   if (!resendKey || !contactEmail) {
+    console.error('Missing env vars:', {
+      hasRuntime: !!runtime,
+      hasEnv: !!runtime?.env,
+      hasResendKey: !!resendKey,
+      hasContactEmail: !!contactEmail,
+      envKeys: runtime?.env ? Object.keys(runtime.env).filter((k: string) => !k.startsWith('__')) : 'no env',
+    });
     return new Response(JSON.stringify({ error: 'Configuracion de email no disponible. Contacta por WhatsApp.' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
@@ -34,7 +41,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         Authorization: `Bearer ${resendKey}`,
       },
       body: JSON.stringify({
-        from: 'info@neustudio.es',
+        from: 'Neu Studio <info@neustudio.es>',
         to: contactEmail,
         subject: `Contacto web: ${name}`,
         html: `<h2>Nuevo mensaje desde la web</h2>
@@ -53,8 +60,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     const errorData = await res.text();
-    console.error('Resend error:', errorData);
-    return new Response(JSON.stringify({ error: 'Error enviando email' }), {
+    console.error('Resend error:', res.status, errorData);
+    return new Response(JSON.stringify({ error: 'Error enviando email', details: errorData }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
