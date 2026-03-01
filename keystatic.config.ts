@@ -266,13 +266,28 @@ export default config({
         }),
       },
     }),
-    legal: singleton({
-      label: 'Paginas legales',
-      path: 'src/content/legal',
+    avisoLegal: singleton({
+      label: 'Aviso Legal',
+      path: 'src/content/aviso-legal',
+      format: { contentField: 'content' },
       schema: {
-        avisoLegal: fields.markdoc({ label: 'Aviso legal' }),
-        privacidad: fields.markdoc({ label: 'Politica de privacidad' }),
-        cookies: fields.markdoc({ label: 'Politica de cookies' }),
+        content: fields.markdoc({ label: 'Contenido' }),
+      },
+    }),
+    privacidad: singleton({
+      label: 'Politica de Privacidad',
+      path: 'src/content/privacidad',
+      format: { contentField: 'content' },
+      schema: {
+        content: fields.markdoc({ label: 'Contenido' }),
+      },
+    }),
+    cookies: singleton({
+      label: 'Politica de Cookies',
+      path: 'src/content/cookies',
+      format: { contentField: 'content' },
+      schema: {
+        content: fields.markdoc({ label: 'Contenido' }),
       },
     }),
   },

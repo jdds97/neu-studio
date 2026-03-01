@@ -2,6 +2,19 @@
 export const prerender = true;
 import Base from '../layouts/Base.astro';
 import { PAGE_SEO } from '../utils/seo-config';
+import Markdoc from '@markdoc/markdoc';
+import { createReader } from '@keystatic/core/reader';
+import keystaticConfig from '../../keystatic.config';
+
+const reader = createReader(process.cwd(), keystaticConfig);
+const legal = await reader.singletons.privacidad.read();
+
+let htmlContent = '<p>Contenido no disponible. Edítalo desde Keystatic.</p>';
+if (legal?.content) {
+  const doc = await legal.content();
+  const rendered = Markdoc.renderers.html(Markdoc.transform(doc.node));
+  htmlContent = rendered;
+}
 ---
 
 <Base
@@ -13,99 +26,6 @@ import { PAGE_SEO } from '../utils/seo-config';
     <h1 class="font-display text-[clamp(2rem,4vw,3.5rem)] tracking-tight-display mb-12">
       Política de Privacidad
     </h1>
-    <div class="prose prose-sm font-body text-brand-gray max-w-none">
-
-      <h2>1. Responsable del tratamiento</h2>
-      <p>En cumplimiento del Reglamento (UE) 2016/679 del Parlamento Europeo y del Consejo (RGPD) y la Ley Orgánica 3/2018, de 5 de diciembre, de Protección de Datos Personales y garantía de los derechos digitales (LOPD-GDD), le informamos de que el responsable del tratamiento de sus datos personales es:</p>
-      <ul>
-        <li><strong>Responsable:</strong> [NOMBRE COMPLETO DEL TITULAR O DENOMINACIÓN SOCIAL — completar]</li>
-        <li><strong>NIF/CIF:</strong> [COMPLETAR]</li>
-        <li><strong>Domicilio:</strong> Av. de España, 110L, 41704 Dos Hermanas, Sevilla</li>
-        <li><strong>Correo electrónico:</strong> info@neustudio.es</li>
-        <li><strong>Teléfono:</strong> +34 695 149 305</li>
-      </ul>
-
-      <h2>2. Datos que recopilamos</h2>
-      <p>Recopilamos los datos personales que usted nos proporciona voluntariamente a través de los siguientes canales:</p>
-
-      <h3>2.1. Formulario de contacto</h3>
-      <ul>
-        <li>Nombre</li>
-        <li>Correo electrónico</li>
-        <li>Teléfono (opcional)</li>
-        <li>Mensaje</li>
-      </ul>
-
-      <h3>2.2. WhatsApp</h3>
-      <p>Al contactarnos a través de WhatsApp, podemos acceder a su nombre de perfil y número de teléfono, así como el contenido de los mensajes que nos envíe.</p>
-
-      <h3>2.3. Redes sociales</h3>
-      <p>Al interactuar con nuestros perfiles en redes sociales (Instagram, TikTok), los datos se rigen por las políticas de privacidad de cada plataforma.</p>
-
-      <h2>3. Finalidades del tratamiento</h2>
-      <p>Los datos personales recogidos serán tratados con las siguientes finalidades:</p>
-      <ul>
-        <li><strong>Gestión de consultas y contacto:</strong> Atender y responder a las solicitudes de información realizadas a través del formulario de contacto, WhatsApp o correo electrónico.</li>
-        <li><strong>Gestión de citas:</strong> Organizar y gestionar las reservas de citas para sesiones de tatuaje.</li>
-        <li><strong>Envío de comunicaciones:</strong> En caso de que usted haya dado su consentimiento expreso, enviarle información sobre nuestros servicios, promociones y novedades.</li>
-      </ul>
-
-      <h2>4. Bases legales del tratamiento</h2>
-      <p>El tratamiento de sus datos se fundamenta en las siguientes bases jurídicas del artículo 6 del RGPD:</p>
-      <ul>
-        <li><strong>Consentimiento del interesado (art. 6.1.a RGPD):</strong> Cuando nos contacta a través del formulario, WhatsApp o correo electrónico, consiente expresamente el tratamiento de sus datos para la finalidad indicada.</li>
-        <li><strong>Interés legítimo del responsable (art. 6.1.f RGPD):</strong> Para la mejora de nuestros servicios y la gestión interna del negocio.</li>
-        <li><strong>Ejecución de un contrato o medidas precontractuales (art. 6.1.b RGPD):</strong> Cuando la finalidad del tratamiento sea la gestión de una cita o la prestación de un servicio de tatuaje solicitado por usted.</li>
-      </ul>
-
-      <h2>5. Conservación de los datos</h2>
-      <p>Los datos personales se conservarán durante el tiempo necesario para cumplir con la finalidad para la que se recogieron y durante los plazos legales de prescripción que resulten de aplicación:</p>
-      <ul>
-        <li><strong>Datos de contacto y consultas:</strong> Se conservarán mientras dure la relación comercial y, una vez finalizada, durante un plazo máximo de 3 años (plazo de prescripción de acciones civiles).</li>
-        <li><strong>Datos fiscales y de facturación:</strong> Se conservarán durante 4 años conforme a la normativa fiscal vigente.</li>
-        <li><strong>Consentimientos de tratamiento de datos:</strong> Se conservarán mientras no se revoque el consentimiento.</li>
-      </ul>
-
-      <h2>6. Comunicación de datos a terceros</h2>
-      <p>Sus datos personales no serán cedidos a terceros salvo en los siguientes supuestos:</p>
-      <ul>
-        <li>Obligación legal (requerimiento de autoridades competentes).</li>
-        <li>Prestadores de servicios necesarios para el funcionamiento de la web (hosting, correo electrónico), que actúan como encargados del tratamiento conforme al artículo 28 del RGPD.</li>
-      </ul>
-      <p><strong>Encargados del tratamiento:</strong></p>
-      <ul>
-        <li><strong>Cloudflare, Inc.</strong> — Alojamiento web (servidores ubicados en la UE y EE.UU. bajo cláusulas contractuales tipo).</li>
-      </ul>
-
-      <h2>7. Transferencias internacionales</h2>
-      <p>Algunos de nuestros proveedores de servicios pueden tener servidores ubicados fuera del Espacio Económico Europeo (EEE). En esos casos, las transferencias de datos se realizan bajo garantías adecuadas, como las Cláusulas Contractuales Tipo aprobadas por la Comisión Europea o la certificación bajo el Marco de Privacidad de Datos UE-EE.UU.</p>
-
-      <h2>8. Derechos del interesado</h2>
-      <p>Conforme al RGPD y la LOPD-GDD, usted tiene derecho a:</p>
-      <ul>
-        <li><strong>Acceso:</strong> Conocer si tratamos sus datos y obtener una copia de los mismos.</li>
-        <li><strong>Rectificación:</strong> Solicitar la corrección de datos inexactos o incompletos.</li>
-        <li><strong>Supresión:</strong> Solicitar la eliminación de sus datos cuando ya no sean necesarios para la finalidad para la que fueron recogidos.</li>
-        <li><strong>Oposición:</strong> Oponerse al tratamiento de sus datos en determinadas circunstancias.</li>
-        <li><strong>Limitación del tratamiento:</strong> Solicitar que se limite el tratamiento de sus datos en determinados supuestos.</li>
-        <li><strong>Portabilidad:</strong> Recibir sus datos en un formato estructurado, de uso común y lectura mecánica, y transmitirlos a otro responsable.</li>
-        <li><strong>Revocación del consentimiento:</strong> Retirar el consentimiento otorgado en cualquier momento, sin que ello afecte a la licitud del tratamiento previo.</li>
-      </ul>
-      <p>Para ejercer cualquiera de estos derechos, puede dirigirse a <strong>info@neustudio.es</strong> indicando su nombre, apellidos y el derecho que desea ejercer, adjuntando copia de su DNI o documento identificativo.</p>
-      <p>Asimismo, le informamos de su derecho a presentar una reclamación ante la <strong>Agencia Española de Protección de Datos (AEPD)</strong> — <a href="https://www.aepd.es" target="_blank" rel="noopener noreferrer">www.aepd.es</a> — si considera que el tratamiento de sus datos no se ajusta a la normativa vigente.</p>
-
-      <h2>9. Medidas de seguridad</h2>
-      <p>El responsable del tratamiento ha adoptado las medidas técnicas y organizativas necesarias para garantizar la seguridad e integridad de los datos de carácter personal, evitando su alteración, pérdida, tratamiento o acceso no autorizado, incluyendo:</p>
-      <ul>
-        <li>Comunicaciones cifradas mediante protocolo HTTPS/TLS.</li>
-        <li>Control de acceso a sistemas y datos.</li>
-        <li>Copias de seguridad periódicas.</li>
-      </ul>
-
-      <h2>10. Modificaciones</h2>
-      <p>El responsable se reserva el derecho a modificar la presente Política de Privacidad para adaptarla a novedades legislativas, jurisprudenciales o de práctica empresarial. En caso de modificaciones sustanciales, se informará al usuario de forma adecuada.</p>
-
-      <p class="text-xs text-brand-gray/60 mt-12">Última actualización: Marzo 2026</p>
-    </div>
+    <div class="prose prose-sm font-body text-brand-gray max-w-none" set:html={htmlContent} />
   </main>
 </Base>
