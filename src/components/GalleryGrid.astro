@@ -11,9 +11,10 @@ interface Props {
   items: GalleryItem[];
   showOverlay?: boolean;
   initialCount?: number;
+  eagerCount?: number;
 }
 
-const { items, showOverlay = true, initialCount = 0 } = Astro.props;
+const { items, showOverlay = true, initialCount = 0, eagerCount = 8 } = Astro.props;
 
 // If initialCount > 0, show progressive loading; otherwise show all
 const useProgressive = initialCount > 0 && items.length > initialCount;
@@ -51,7 +52,8 @@ function getBentoSize(index: number): BentoSize {
         <img
           src={item.image}
           alt={item.title}
-          loading={index < 8 ? 'eager' : 'lazy'}
+          loading={index < eagerCount ? 'eager' : 'lazy'}
+          decoding="async"
           width="600"
           height="600"
           class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"

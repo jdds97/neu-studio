@@ -55,14 +55,21 @@ const instagramUrl = site.instagram || 'https://instagram.com/neu.studio_';
   <!-- Main content -->
   <div class="relative z-10 flex flex-col items-center text-center px-6">
     <!-- Logo NEU vertical with blue neon glow -->
-    <img
-      src={heroImage}
-      alt={`${title} - ${subtitle}`}
-      class="h-[220px] md:h-[320px] lg:h-[400px] w-auto pointer-events-none hero-logo"
-      fetchpriority="high"
-      width="800"
-      height="1366"
-    />
+    <picture>
+      <source
+        srcset={heroImage.replace(/\.png$/, '.webp')}
+        type="image/webp"
+      />
+      <img
+        src={heroImage}
+        alt={`${title} - ${subtitle}`}
+        class="h-[220px] md:h-[320px] lg:h-[400px] w-auto pointer-events-none hero-logo"
+        fetchpriority="high"
+        decoding="async"
+        width="800"
+        height="1366"
+      />
+    </picture>
 
     <!-- Title (screen reader) -->
     <h1 class="sr-only">{title}</h1>

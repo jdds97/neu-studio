@@ -66,6 +66,9 @@ const fullTitle = title.includes('Neu Studio') ? title : `${title} | Neu Studio`
 <meta name="geo.position" content={`${BUSINESS_INFO.geo.lat};${BUSINESS_INFO.geo.lng}`} />
 <meta name="ICBM" content={`${BUSINESS_INFO.geo.lat}, ${BUSINESS_INFO.geo.lng}`} />
 
+<!-- Preload hero image (LCP element) -->
+<link rel="preload" as="image" type="image/webp" href="/images/logo-hero.webp" />
+
 <!-- Preload fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

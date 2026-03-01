@@ -23,13 +23,17 @@ const steps = rawSteps
 
 <section id="proceso" class="relative py-24 overflow-hidden" data-animate>
   <!-- Background: Flamenco scene (Sevilla culture) -->
-  <img
-    src="/images/branding/bg-flamenco.jpg"
-    alt=""
-    aria-hidden="true"
-    class="absolute inset-0 w-full h-full object-cover"
-    loading="lazy"
-  />
+  <picture>
+    <source srcset="/images/branding/bg-flamenco.webp" type="image/webp" />
+    <img
+      src="/images/branding/bg-flamenco.jpg"
+      alt=""
+      aria-hidden="true"
+      class="absolute inset-0 w-full h-full object-cover"
+      loading="lazy"
+      decoding="async"
+    />
+  </picture>
   <!-- Dark overlay for readability -->
   <div class="absolute inset-0 bg-brand-dark/45" aria-hidden="true"></div>
 
