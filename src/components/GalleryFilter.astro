@@ -1,16 +1,17 @@
 ---
-const styles = [
-  'Todos', 'Fineline', 'Realismo', 'Color', 'Blackwork',
-  'Composicion', 'Freehand', 'Mascotas', 'Florales', 'Microrealismo', 'Curados'
-];
+import { getSingleton } from '../utils/content';
+
+const galleryPage = getSingleton<Record<string, string>>('gallery-page');
+const filterRaw = galleryPage.filterStyles || 'Todos, Fineline, Realismo, Color, Blackwork, Composición, Freehand, Mascotas, Florales, Microrealismo, Curados';
+const styles = filterRaw.split(',').map((s: string) => s.trim()).filter(Boolean);
 ---
 
-<div class="flex overflow-x-auto gap-2 pb-4 mb-8 gallery-filter-scroll">
-  {styles.map((style, i) => (
+<div class="flex flex-wrap gap-2 mb-8">
+  {styles.map((style: string, i: number) => (
     <button
       data-filter={style.toLowerCase()}
       class:list={[
-        'font-accent text-xs tracking-wide-label uppercase px-4 py-2 border whitespace-nowrap shrink-0 transition-colors duration-200',
+        'font-accent text-xs tracking-wide-label uppercase px-4 py-2 border whitespace-nowrap transition-colors duration-200',
         i === 0
           ? 'bg-brand-dark text-white border-brand-dark'
           : 'border-brand-border text-brand-gray',
@@ -20,16 +21,6 @@ const styles = [
     </button>
   ))}
 </div>
-
-<style>
-  .gallery-filter-scroll::-webkit-scrollbar {
-    display: none;
-  }
-  .gallery-filter-scroll {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-</style>
 
 <script>
   document.querySelectorAll('[data-filter]').forEach((btn) => {

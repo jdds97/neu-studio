@@ -1,6 +1,10 @@
 ---
-const whatsappNumber = '34695149305';
-const message = encodeURIComponent('Hola, me gustaria pedir informacion sobre un tatuaje');
+import { getSingleton } from '../utils/content';
+
+const site = getSingleton<Record<string, string>>('site');
+const whatsappNumber = site.whatsapp || '34695149305';
+const defaultMessage = site.whatsappMessage || 'Hola, me gustaría pedir información sobre un tatuaje';
+const message = encodeURIComponent(defaultMessage);
 ---
 
 <a

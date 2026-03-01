@@ -1,0 +1,9 @@
+label: Contacto
+title: Hablemos
+formNameLabel: 'Nombre *'
+formEmailLabel: 'Email *'
+formPhoneLabel: Teléfono
+formMessageLabel: 'Mensaje *'
+formSubmitButton: Enviar mensaje
+formSuccessMessage: Mensaje enviado. Te contactaremos pronto.
+formErrorMessage: Error al enviar. Inténtalo de nuevo o contáctanos por WhatsApp.

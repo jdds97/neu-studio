@@ -1,12 +1,17 @@
 studioName: Neu Studio
-address: ''
-phone: ''
-whatsapp: ''
-email: ''
-schedule: ''
-googleMapsUrl: null
+address: 'Av. de España, 110L, 41704 Dos Hermanas, Sevilla'
+phone: '+34 695 149 305'
+phoneRaw: '+34695149305'
+whatsapp: '34695149305'
+whatsappMessage: 'Hola, me gustaría pedir información sobre un tatuaje'
+email: info@neustudio.es
+schedule: 'Lunes a Sábado: 10:00 - 20:00'
+googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Neu+Studio+Av+de+España+110L+41704+Dos+Hermanas+Sevilla'
+googleMapsEmbed: 'https://www.google.com/maps?q=Av+de+España+110L+41704+Dos+Hermanas+Sevilla+Neu+Studio&output=embed&hl=es'
 googleRating: '5.0'
-googleReviewCount: '0'
-instagram: null
-tiktok: null
+googleReviewCount: '12'
+instagram: https://instagram.com/neu.studio_
+instagramHandle: '@neu.studio_'
+tiktok: https://tiktok.com/@neu.studio_
+tiktokHandle: '@neu.studio_'
 facebook: null

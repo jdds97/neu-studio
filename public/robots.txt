@@ -1,5 +1,9 @@
 User-agent: *
 Allow: /
 Disallow: /keystatic
+Disallow: /api/keystatic
+Disallow: /aviso-legal
+Disallow: /privacidad
+Disallow: /cookies
 
 Sitemap: https://neustudio.es/sitemap-index.xml

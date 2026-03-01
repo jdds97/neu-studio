@@ -1,3 +1,29 @@
 heroTitle: NEU STUDIO
-heroSubtitle: Estudio de tatuaje en Dos Hermanas
-heroImage: ''
+heroSubtitle: Estudio de tatuaje en Dos Hermanas, Sevilla
+heroImage: /images/logo-hero.png
+heroCtaPrimary: Reservar cita
+heroCtaPrimaryUrl: /contacto
+heroCtaSecondary: Ver galería
+heroCtaSecondaryUrl: /galeria
+marqueeItems: 'Fineline, Realismo, Blackwork, Color, Composición, Cover-up, Microrealismo, Freehand, Lettering, Geométrico, Neotradicional, Minimalista'
+servicesLabel: Servicios
+servicesTitle: Nuestros servicios
+servicesCta: Contactar
+galleryLabel: Galería
+galleryTitle: Trabajos destacados
+galleryLink: Ver toda la galería
+galleryCta: Contactar
+artistsLabel: Artistas
+artistsTitle: Nuestro equipo
+artistsLink: Ver todos
+artistsCta: Contactar
+processLabel: Proceso
+processTitle: Cómo trabajamos
+testimonialsLabel: Testimonios
+testimonialsTitle: Lo que dicen nuestros clientes
+faqLabel: FAQ
+faqTitle: Preguntas frecuentes
+ctaTitle: '¿Listo para tu próximo tatuaje?'
+ctaSubtitle: Contáctanos y da vida a tu idea con nuestros artistas
+ctaButton: Contactar
+ctaButtonUrl: /contacto

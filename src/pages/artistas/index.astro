@@ -1,8 +1,14 @@
 ---
+export const prerender = true;
 import Base from '../../layouts/Base.astro';
 import ArtistCard from '../../components/ArtistCard.astro';
+import { PAGE_SEO } from '../../utils/seo-config';
+import { getBreadcrumbSchema } from '../../utils/structured-data';
+import { getSingleton } from '../../utils/content';
 import fs from 'node:fs';
 import path from 'node:path';
+
+const artistsPage = getSingleton<Record<string, string>>('artists-page');
 
 interface Artist {
   slug: string;
@@ -54,15 +60,24 @@ const artists: Artist[] = files.map((file: string) => {
 }).filter(Boolean) as Artist[];
 
 artists.sort((a, b) => a.order - b.order);
+
+const breadcrumb = getBreadcrumbSchema([
+  { name: 'Inicio', url: '/' },
+  { name: 'Artistas', url: '/artistas' },
+]);
 ---
 
-<Base title="Artistas">
-  <main class="pt-24 pb-16 px-6 md:px-12">
+<Base
+  title={PAGE_SEO.artistas.title}
+  description={PAGE_SEO.artistas.description}
+  structuredData={breadcrumb}
+>
+  <main class="pt-24 pb-16 px-6 md:px-12 max-w-7xl mx-auto">
     <span class="block font-accent text-xs tracking-wider-label uppercase text-brand-gray mb-4">
-      ARTISTAS
+      {artistsPage.label || 'Artistas'}
     </span>
     <h1 class="font-display text-[clamp(2rem,4vw,3.5rem)] tracking-tight-display mb-16">
-      Nuestro equipo
+      {artistsPage.title || 'Nuestro equipo'}
     </h1>
 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-1">

@@ -1,19 +1,31 @@
 ---
 import { ViewTransitions } from 'astro:transitions';
 import '../styles/global.css';
+import SEO from '../components/common/SEO.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 import BookingButton from '../components/BookingButton.astro';
+import { getTattooParlorSchema } from '../utils/structured-data';
 
 interface Props {
   title: string;
   description?: string;
   image?: string;
+  noindex?: boolean;
+  hideFooter?: boolean;
+  structuredData?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const { title, description = 'Neu Studio - Estudio de tatuaje en Dos Hermanas, Sevilla. Tatuajes personalizados, fineline, realismo y mas.', image = '/images/og-default.jpg' } = Astro.props;
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const { title, description, image, noindex, hideFooter, structuredData } = Astro.props;
+
+const tattooParlorSchema = getTattooParlorSchema();
+
+// Combine structured data: always include TattooParlor, plus any page-specific schemas
+const allSchemas = [
+  tattooParlorSchema,
+  ...(Array.isArray(structuredData) ? structuredData : structuredData ? [structuredData] : []),
+];
 ---
 
 <!doctype html>
@@ -21,50 +33,24 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>{title} | Neu Studio</title>
     <ViewTransitions />
 
-    <!-- Canonical -->
-    <link rel="canonical" href={canonicalURL} />
-
-    <!-- Open Graph -->
-    <meta property="og:title" content={`${title} | Neu Studio`} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={canonicalURL} />
-    <meta property="og:image" content={new URL(image, Astro.site)} />
-    <meta property="og:locale" content="es_ES" />
-    <meta property="og:site_name" content="Neu Studio" />
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={`${title} | Neu Studio`} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={new URL(image, Astro.site)} />
+    <SEO
+      title={title}
+      description={description}
+      image={image}
+      noindex={noindex}
+    />
 
     <!-- Structured Data -->
-    <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "TattooParlor",
-      "name": "Neu Studio",
-      "description": description,
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Dos Hermanas",
-        "addressRegion": "Sevilla",
-        "addressCountry": "ES"
-      },
-      "url": "https://neustudio.es",
-      "image": new URL(image, Astro.site).toString(),
-      "priceRange": "$$"
-    })} />
+    {allSchemas.map((schema) => (
+      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    ))}
   </head>
   <body class="font-body text-brand-dark bg-white">
     <Nav />
     <slot />
-    <Footer />
+    {!hideFooter && <Footer />}
     <BookingButton />
     <WhatsAppButton />
     <script>

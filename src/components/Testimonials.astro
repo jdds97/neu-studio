@@ -1,7 +1,12 @@
 ---
-import fs from 'node:fs';
-import path from 'node:path';
-import yaml from 'js-yaml';
+import { getSingleton, getCollection } from '../utils/content';
+import { getGoogleReviews } from '../utils/google-reviews';
+
+const home = getSingleton<Record<string, string>>('home');
+const site = getSingleton<Record<string, string>>('site');
+
+const testimonialsLabel = home.testimonialsLabel || 'Testimonios';
+const testimonialsTitle = home.testimonialsTitle || 'Lo que dicen nuestros clientes';
 
 interface Testimonial {
   clientName: string;
@@ -10,71 +15,76 @@ interface Testimonial {
   source: string;
 }
 
-const testimonialsDir = path.join(process.cwd(), 'src/content/testimonials');
-const files = fs.readdirSync(testimonialsDir).filter((f: string) => f.endsWith('.yaml'));
+// 1. Try Google Places API first
+const { reviews: googleReviews, rating: googleRating } = await getGoogleReviews();
 
-const testimonials: Testimonial[] = files.map((file: string) => {
-  const raw = fs.readFileSync(path.join(testimonialsDir, file), 'utf-8');
-  const data = yaml.load(raw) as Record<string, unknown>;
-  return {
-    clientName: String(data.clientName || ''),
-    text: String(data.text || ''),
-    stars: Number(data.stars ?? 5),
-    source: String(data.source || 'google'),
-  };
-});
+let testimonials: Testimonial[] = [];
+let ratingScore = parseFloat(site.googleRating || '5.0');
+let ratingTotal = parseInt(site.googleReviewCount || '0', 10);
 
-function renderStars(count: number): string {
-  return '★'.repeat(count);
+if (googleReviews.length > 0) {
+  testimonials = googleReviews.map((r) => ({
+    clientName: r.authorName,
+    text: r.text,
+    stars: r.rating,
+    source: 'google',
+  }));
+  ratingScore = googleRating.score;
+  ratingTotal = googleRating.total;
+} else {
+  // 2. Fallback to local YAML files via CMS
+  const rawTestimonials = getCollection<Testimonial>('testimonials');
+  testimonials = rawTestimonials.map((t) => ({
+    clientName: String(t.clientName || ''),
+    text: String(t.text || ''),
+    stars: Number(t.stars ?? 5),
+    source: String(t.source || 'google'),
+  }));
 }
 
-function sourceLabel(source: string): string {
-  const labels: Record<string, string> = {
-    google: 'Google',
-    instagram: 'Instagram',
-  };
-  return labels[source] || source;
+function renderStars(count: number): string {
+  return '\u2605'.repeat(count);
 }
 ---
 
-<section id="testimonios" class="py-24 bg-brand-light" data-animate>
-  <div class="px-6 md:px-12">
+<section id="testimonios" class="py-24" data-animate>
+  <div class="px-6 md:px-12 max-w-7xl mx-auto">
     <span class="block font-accent text-xs tracking-wider-label uppercase text-brand-gray mb-4">
-      Testimonios
+      {testimonialsLabel}
     </span>
 
     <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-16 gap-6">
       <h2 class="font-display text-[clamp(2rem,4vw,3.5rem)] tracking-tight-display">
-        Lo que dicen nuestros clientes
+        {testimonialsTitle}
       </h2>
 
       {/* Google rating badge */}
       <div class="flex-shrink-0">
         <span class="block font-display text-4xl tracking-tight-display text-brand-dark">
-          5.0 <span class="text-brand-blue">★</span>
+          {ratingScore.toFixed(1)} <span class="text-brand-blue">&#9733;</span>
         </span>
         <span class="block font-accent text-xs tracking-wide-label uppercase text-brand-gray mt-1">
-          en Google
+          {ratingTotal > 0 ? `${ratingTotal} reseñas en Google` : 'en Google'}
         </span>
       </div>
     </div>
   </div>
 
   {/* Horizontal scrollable container */}
-  <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 px-6 md:px-12 pb-4 scrollbar-hide">
+  <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 px-6 md:px-12 pb-4 max-w-7xl mx-auto scrollbar-hide">
     {testimonials.map((t) => (
       <div class="min-w-[300px] md:min-w-[400px] flex-shrink-0 p-8 bg-white snap-start">
         <span class="block text-brand-blue text-sm mb-4" aria-label={`${t.stars} estrellas`}>
           {renderStars(t.stars)}
         </span>
         <p class="font-body text-base italic mb-4">
-          "{t.text}"
+          &ldquo;{t.text}&rdquo;
         </p>
         <span class="block font-accent text-xs tracking-wide-label uppercase text-brand-dark">
           {t.clientName}
         </span>
         <span class="block font-accent text-xs tracking-wide-label uppercase text-brand-gray mt-1">
-          {sourceLabel(t.source)}
+          Google
         </span>
       </div>
     ))}

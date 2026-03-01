@@ -1,10 +1,18 @@
 import { defineMiddleware } from 'astro:middleware';
 
 export const onRequest = defineMiddleware(async (context, next) => {
-  if (!context.url.pathname.startsWith('/keystatic')) {
+  // Only protect /keystatic routes
+  if (!context.url.pathname.startsWith('/keystatic') && !context.url.pathname.startsWith('/api/keystatic')) {
     return next();
   }
 
+  // In production with GitHub storage, Keystatic handles its own auth via GitHub OAuth
+  // Allow OAuth callback and API routes through
+  if (import.meta.env.PROD) {
+    return next();
+  }
+
+  // In development, use basic auth if configured
   const user = import.meta.env.KEYSTATIC_USER || 'admin';
   const pass = import.meta.env.KEYSTATIC_PASSWORD;
 

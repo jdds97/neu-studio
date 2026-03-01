@@ -1,0 +1,6 @@
+label: Galería
+title: Nuestros trabajos
+description: Explora los trabajos de nuestros artistas. Cada pieza es única y personalizada.
+emptyState: Próximamente subiremos nuestros trabajos
+loadMoreText: Ver más trabajos
+filterStyles: 'Todos, Fineline, Realismo, Color, Blackwork, Composición, Freehand, Mascotas, Florales, Microrealismo, Curados'

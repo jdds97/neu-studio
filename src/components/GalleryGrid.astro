@@ -10,45 +10,137 @@ interface GalleryItem {
 interface Props {
   items: GalleryItem[];
   showOverlay?: boolean;
+  initialCount?: number;
 }
 
-const { items, showOverlay = true } = Astro.props;
+const { items, showOverlay = true, initialCount = 0 } = Astro.props;
+
+// If initialCount > 0, show progressive loading; otherwise show all
+const useProgressive = initialCount > 0 && items.length > initialCount;
+
+// Bento pattern: repeating cycle of 5 items in a 4-column grid
+// Row 1: [featured 2x2] [normal] [normal]
+// Row 2: [featured    ] [normal] [normal]
+// This fills exactly 2 rows per cycle with 0 gaps
+type BentoSize = 'featured' | 'normal';
+
+function getBentoSize(index: number): BentoSize {
+  const pos = index % 5;
+  if (pos === 0) return 'featured'; // 2x2
+  return 'normal';                   // 1x1
+}
 ---
 
-<div class="pswp-gallery grid grid-cols-2 md:grid-cols-3 gap-1">
-  {items.map((item) => (
-    <a
-      class="pswp-gallery__item relative overflow-hidden group cursor-pointer block"
-      data-pswp-src={item.image}
-      data-pswp-width="1200"
-      data-pswp-height="1200"
-      data-style={item.style}
-      href={item.image}
-    >
-      <img
-        src={item.image}
-        alt={item.title}
-        loading="lazy"
-        class="w-full h-full object-cover aspect-[3/4] transition-transform duration-300 group-hover:scale-[1.02]"
-      />
-      {showOverlay && (
-        <div
-          class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end"
-          style="background: linear-gradient(0deg, rgba(0,0,0,.85) 0%, rgba(0,0,0,.3) 50%, rgba(0,0,0,.15) 65%, rgba(0,0,0,.075) 75.5%, rgba(0,0,0,.037) 82.85%, rgba(0,0,0,.019) 88%, transparent 100%);"
-        >
-          <div class="p-4 w-full">
-            <span class="font-accent text-xs tracking-wide-label uppercase text-white block">
-              {item.artist}
-            </span>
-            <span class="font-accent text-[0.65rem] tracking-wide-label uppercase text-brand-gray mt-1 block">
-              {item.style}
-            </span>
+<div class="pswp-gallery bento-grid" data-gallery-grid>
+  {items.map((item, index) => {
+    const size = getBentoSize(index);
+    return (
+      <a
+        class:list={[
+          'pswp-gallery__item bento-item relative overflow-hidden group cursor-pointer block',
+          size === 'featured' && 'bento-item--featured',
+          useProgressive && index >= initialCount && 'hidden',
+        ]}
+        data-pswp-src={item.image}
+        data-pswp-width="1200"
+        data-pswp-height="1200"
+        data-style={item.style}
+        data-gallery-item
+        href={item.image}
+      >
+        <img
+          src={item.image}
+          alt={item.title}
+          loading={index < 8 ? 'eager' : 'lazy'}
+          width="600"
+          height="600"
+          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+        />
+        {showOverlay && (
+          <div
+            class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end"
+            style="background: linear-gradient(0deg, rgba(0,0,0,.75) 0%, rgba(0,0,0,.2) 40%, transparent 70%);"
+          >
+            <div class="p-4 md:p-5 w-full flex items-end justify-between">
+              <div>
+                <span class="font-accent text-xs tracking-wide-label uppercase text-white block">
+                  {item.artist}
+                </span>
+                <span class="font-accent text-[0.65rem] tracking-wide-label uppercase text-white/50 mt-1 block">
+                  {item.style}
+                </span>
+              </div>
+              <span class="font-accent text-[0.6rem] tracking-wide-label uppercase text-white/50">
+                {index + 1}/{items.length}
+              </span>
+            </div>
           </div>
-        </div>
-      )}
-    </a>
-  ))}
+        )}
+      </a>
+    );
+  })}
 </div>
+
+{useProgressive && (
+  <div class="mt-10 text-center" data-gallery-load-more>
+    <button
+      type="button"
+      class="border border-brand-dark text-brand-dark font-body text-sm font-medium px-10 py-4 hover:bg-brand-dark hover:text-white transition-colors duration-300"
+      data-total={items.length}
+      data-initial={initialCount}
+      data-step={initialCount}
+    >
+      Ver mas trabajos ({items.length - initialCount} restantes)
+    </button>
+  </div>
+)}
+
+<style is:global>
+  /* ── Bento Grid ── */
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 220px;
+    grid-auto-flow: dense;
+    gap: 4px;
+  }
+
+  /* Mobile: 2 columns */
+  @media (max-width: 767px) {
+    .bento-grid {
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: 180px;
+      gap: 3px;
+    }
+  }
+
+  /* Tablet: 3 columns */
+  @media (min-width: 768px) and (max-width: 1279px) {
+    .bento-grid {
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: 200px;
+    }
+  }
+
+  /* Desktop: 4 columns, bigger rows */
+  @media (min-width: 1280px) {
+    .bento-grid {
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: 250px;
+    }
+  }
+
+  .bento-item {
+    min-height: 0;
+  }
+
+  /* Featured: 2x2 (big square) */
+  .bento-item--featured {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+
+</style>
 
 <script>
   import PhotoSwipe from 'photoswipe';
@@ -60,10 +152,12 @@ const { items, showOverlay = true } = Astro.props;
       const target = (e.target as HTMLElement).closest('.pswp-gallery__item');
       if (!target) return;
 
-      const items = [...gallery.querySelectorAll('.pswp-gallery__item')];
-      const index = items.indexOf(target);
+      // Only include visible items
+      const visibleItems = [...gallery.querySelectorAll('.pswp-gallery__item:not(.hidden)')];
+      const index = visibleItems.indexOf(target);
+      if (index === -1) return;
 
-      const dataSource = items.map((item) => ({
+      const dataSource = visibleItems.map((item) => ({
         src: item.getAttribute('data-pswp-src') || '',
         width: parseInt(item.getAttribute('data-pswp-width') || '1200'),
         height: parseInt(item.getAttribute('data-pswp-height') || '1200'),
@@ -78,4 +172,36 @@ const { items, showOverlay = true } = Astro.props;
       pswp.init();
     });
   });
+
+  // Progressive loading
+  const loadMoreContainer = document.querySelector('[data-gallery-load-more]');
+  if (loadMoreContainer) {
+    const btn = loadMoreContainer.querySelector('button');
+    if (btn) {
+      const step = parseInt(btn.dataset.step || '12');
+      const total = parseInt(btn.dataset.total || '0');
+      let shown = parseInt(btn.dataset.initial || '12');
+
+      btn.addEventListener('click', () => {
+        const grid = document.querySelector('[data-gallery-grid]');
+        if (!grid) return;
+
+        const hiddenItems = grid.querySelectorAll('[data-gallery-item].hidden');
+        const toShow = Math.min(step, hiddenItems.length);
+
+        for (let i = 0; i < toShow; i++) {
+          hiddenItems[i].classList.remove('hidden');
+        }
+
+        shown += toShow;
+        const remaining = total - shown;
+
+        if (remaining <= 0) {
+          loadMoreContainer.remove();
+        } else {
+          btn.textContent = `Ver mas trabajos (${remaining} restantes)`;
+        }
+      });
+    }
+  }
 </script>

@@ -1,6 +1,8 @@
 ---
+export const prerender = true;
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
+import ServiceMarquee from '../components/ServiceMarquee.astro';
 import Services from '../components/Services.astro';
 import GalleryGrid from '../components/GalleryGrid.astro';
 import ArtistCard from '../components/ArtistCard.astro';
@@ -8,9 +10,14 @@ import Process from '../components/Process.astro';
 import Testimonials from '../components/Testimonials.astro';
 import FAQ from '../components/FAQ.astro';
 import CTASection from '../components/CTASection.astro';
+import { PAGE_SEO } from '../utils/seo-config';
+import { getWebSiteSchema, getFAQSchema } from '../utils/structured-data';
+import { getSingleton } from '../utils/content';
 import fs from 'node:fs';
 import path from 'node:path';
 import yaml from 'js-yaml';
+
+const home = getSingleton<Record<string, string>>('home');
 
 // --- Featured Gallery ---
 const galleryDir = path.join(process.cwd(), 'src/content/gallery');
@@ -39,7 +46,7 @@ try {
       featured: data.featured === true,
     };
   });
-  featuredItems = allItems.filter((item) => item.featured).slice(0, 8);
+  featuredItems = allItems.filter((item) => item.featured).slice(0, 10);
 } catch {
   // Gallery directory empty or unreadable — featuredItems stays empty
 }
@@ -91,69 +98,114 @@ const artists: Artist[] = artistFiles.map((file: string) => {
 }).filter(Boolean) as Artist[];
 
 artists.sort((a, b) => a.order - b.order);
+
+// --- FAQ for structured data ---
+const faqDir = path.join(process.cwd(), 'src/content/faq');
+let faqItems: { question: string; answer: string }[] = [];
+try {
+  const faqFiles = fs.readdirSync(faqDir).filter((f: string) => f.endsWith('.mdoc'));
+  faqItems = faqFiles.map((file: string) => {
+    const raw = fs.readFileSync(path.join(faqDir, file), 'utf-8');
+    const match = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+    if (!match) return null;
+    const fm: Record<string, string> = {};
+    match[1].split('\n').forEach((line: string) => {
+      const idx = line.indexOf(':');
+      if (idx > 0) {
+        fm[line.slice(0, idx).trim()] = line.slice(idx + 1).trim();
+      }
+    });
+    return { question: fm.question || '', answer: match[2].trim() };
+  }).filter(Boolean) as { question: string; answer: string }[];
+} catch {
+  // FAQ directory empty
+}
+
+const structuredData = [
+  getWebSiteSchema(),
+  ...(faqItems.length > 0 ? [getFAQSchema(faqItems)] : []),
+];
 ---
 
-<Base title="Inicio">
+<Base
+  title={PAGE_SEO.home.title}
+  description={PAGE_SEO.home.description}
+  structuredData={structuredData}
+>
   <main>
     <!-- 1. Hero -->
     <Hero />
+
+    <!-- 1.5 Service Marquee -->
+    <ServiceMarquee />
 
     <!-- 2. Services -->
     <Services />
 
     <!-- 3. Featured Gallery -->
     {featuredItems.length > 0 ? (
-      <section id="galeria" class="py-24 px-6 md:px-12">
+      <section id="galeria" class="py-24 px-6 md:px-12 max-w-7xl mx-auto">
         <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-16 gap-6">
           <div>
             <span class="block font-accent text-xs tracking-wider-label uppercase text-brand-gray mb-4">
-              Galeria
+              {home.galleryLabel || 'Galería'}
             </span>
             <h2 class="font-display text-[clamp(2rem,4vw,3.5rem)] tracking-tight-display">
-              Trabajos destacados
+              {home.galleryTitle || 'Trabajos destacados'}
             </h2>
           </div>
           <a
             href="/galeria"
             class="font-accent text-xs tracking-wide-label uppercase text-brand-blue hover:text-brand-blue-hover transition-colors"
           >
-            Ver toda la galeria &rarr;
+            {home.galleryLink || 'Ver toda la galería'} &rarr;
           </a>
         </div>
         <GalleryGrid items={featuredItems} />
+
+        <!-- CTA -->
+        <div class="mt-12 text-center">
+          <a
+            href="/contacto"
+            class="inline-block bg-brand-blue text-white font-body text-sm font-medium px-8 py-4 hover:bg-brand-blue-hover transition-colors"
+          >
+            Contactar
+          </a>
+        </div>
       </section>
     ) : (
-      <section id="galeria" class="py-24 px-6 md:px-12">
+      <section id="galeria" class="py-24 px-6 md:px-12 max-w-7xl mx-auto">
         <span class="block font-accent text-xs tracking-wider-label uppercase text-brand-gray mb-4">
-          Galeria
+          {home.galleryLabel || 'Galería'}
         </span>
         <h2 class="font-display text-[clamp(2rem,4vw,3.5rem)] tracking-tight-display mb-16">
-          Trabajos destacados
+          {home.galleryTitle || 'Trabajos destacados'}
         </h2>
         <div class="text-center py-12">
           <p class="font-accent text-sm tracking-wide-label uppercase text-brand-gray">
-            Proximamente
+            Próximamente
           </p>
         </div>
       </section>
     )}
 
     <!-- 4. Artists Preview -->
-    <section id="artistas" class="py-24 px-6 md:px-12">
+    <section id="artistas" class="py-24 bg-[#c8c8c8]/10">
+      <div class="px-6 md:px-12 max-w-7xl mx-auto">
       <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-16 gap-6">
         <div>
           <span class="block font-accent text-xs tracking-wider-label uppercase text-brand-gray mb-4">
-            Artistas
+            {home.artistsLabel || 'Artistas'}
           </span>
           <h2 class="font-display text-[clamp(2rem,4vw,3.5rem)] tracking-tight-display">
-            Nuestro equipo
+            {home.artistsTitle || 'Nuestro equipo'}
           </h2>
         </div>
         <a
           href="/artistas"
           class="font-accent text-xs tracking-wide-label uppercase text-brand-blue hover:text-brand-blue-hover transition-colors"
         >
-          Ver todos &rarr;
+          {home.artistsLink || 'Ver todos'} &rarr;
         </a>
       </div>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -165,6 +217,17 @@ artists.sort((a, b) => a.order - b.order);
             specialties={artist.specialties}
           />
         ))}
+      </div>
+
+      <!-- CTA -->
+      <div class="mt-12 text-center">
+        <a
+          href="/contacto"
+          class="inline-block bg-brand-blue text-white font-body text-sm font-medium px-8 py-4 hover:bg-brand-blue-hover transition-colors"
+        >
+          Contactar
+        </a>
+      </div>
       </div>
     </section>
 

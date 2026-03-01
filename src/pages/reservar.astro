@@ -1,15 +1,30 @@
 ---
+export const prerender = true;
 import Base from '../layouts/Base.astro';
+import { PAGE_SEO } from '../utils/seo-config';
+import { getBreadcrumbSchema } from '../utils/structured-data';
+import { getSingleton } from '../utils/content';
+
+const bookingPage = getSingleton<Record<string, string>>('booking-page');
+
+const breadcrumb = getBreadcrumbSchema([
+  { name: 'Inicio', url: '/' },
+  { name: 'Reservar', url: '/reservar' },
+]);
 ---
 
-<Base title="Reservar cita">
-  <main class="pt-24 pb-16 px-6 md:px-12">
-    <p class="font-accent text-xs tracking-wider-label uppercase text-brand-gray mb-4">RESERVAS</p>
+<Base
+  title={PAGE_SEO.reservar.title}
+  description={PAGE_SEO.reservar.description}
+  structuredData={breadcrumb}
+>
+  <main class="pt-24 pb-16 px-6 md:px-12 max-w-7xl mx-auto">
+    <p class="font-accent text-xs tracking-wider-label uppercase text-brand-gray mb-4">{bookingPage.label || 'Reservas'}</p>
     <h1 class="font-display text-[clamp(2rem,4vw,3.5rem)] tracking-tight-display mb-4">
-      Reservar cita
+      {bookingPage.title || 'Reservar cita'}
     </h1>
     <p class="font-body text-sm text-brand-gray mb-12 max-w-lg">
-      Elige artista, tipo de sesion y horario. Las sesiones varian entre 2 y 8 horas segun el trabajo.
+      {bookingPage.description || 'Elige artista, tipo de sesión y horario. Las sesiones varían entre 2 y 8 horas según el trabajo.'}
     </p>
 
     <!-- Cal.com inline embed placeholder -->

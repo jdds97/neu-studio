@@ -7,7 +7,7 @@ export default {
         brand: {
           blue: '#2A2AEE',
           'blue-hover': '#1E1ECC',
-          gray: '#B6B6B6',
+          gray: '#737373',
           dark: '#1A1A1A',
           light: '#F5F5F0',
           border: '#E5E5E5',

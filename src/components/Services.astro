@@ -1,6 +1,12 @@
 ---
 import fs from 'node:fs';
 import path from 'node:path';
+import { getSingleton } from '../utils/content';
+
+const home = getSingleton<Record<string, string>>('home');
+const servicesLabel = home.servicesLabel || 'Servicios';
+const servicesTitle = home.servicesTitle || 'Nuestros servicios';
+const servicesCta = home.servicesCta || 'Contactar';
 
 interface Service {
   slug: string;
@@ -42,30 +48,42 @@ const services: Service[] = files.map((file: string) => {
 services.sort((a, b) => a.order - b.order);
 ---
 
-<section id="servicios" class="py-24 px-6 md:px-12" data-animate>
-  <span class="block font-accent text-xs tracking-wider-label uppercase text-brand-gray mb-4">
-    Servicios
-  </span>
-  <h2 class="font-display text-[clamp(2rem,4vw,3.5rem)] tracking-tight-display mb-16">
-    Nuestros servicios
-  </h2>
+<section id="servicios" class="py-24 bg-[#c8c8c8]/10" data-animate>
+  <div class="px-6 md:px-12 max-w-7xl mx-auto">
+    <span class="block font-accent text-xs tracking-wider-label uppercase text-brand-gray mb-4">
+      {servicesLabel}
+    </span>
+    <h2 class="font-display text-[clamp(2rem,4vw,3.5rem)] tracking-tight-display mb-16">
+      {servicesTitle}
+    </h2>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-10" data-animate-stagger>
-    {services.map((service) => (
-      <div class="border-b border-brand-border pb-8">
-        <h3 class="font-display text-base tracking-tight-display mb-3">
-          {service.name}
-        </h3>
-        <p class="font-body text-sm text-brand-gray mb-4">
-          {service.description}
-        </p>
-        <span class="block font-accent text-xs tracking-wide-label uppercase text-brand-blue">
-          {service.price}
-        </span>
-        <span class="block font-accent text-xs tracking-wide-label uppercase text-brand-gray mt-1">
-          {service.duration}
-        </span>
-      </div>
-    ))}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-10" data-animate-stagger>
+      {services.map((service) => (
+        <div class="border-b border-brand-border pb-8">
+          <h3 class="font-display text-base tracking-tight-display mb-3">
+            {service.name}
+          </h3>
+          <p class="font-body text-sm text-brand-gray mb-4">
+            {service.description}
+          </p>
+          <span class="block font-accent text-xs tracking-wide-label uppercase text-brand-blue">
+            {service.price}
+          </span>
+          <span class="block font-accent text-xs tracking-wide-label uppercase text-brand-gray mt-1">
+            {service.duration}
+          </span>
+        </div>
+      ))}
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-12 text-center">
+      <a
+        href="/contacto"
+        class="inline-block bg-brand-blue text-white font-body text-sm font-medium px-8 py-4 hover:bg-brand-blue-hover transition-colors"
+      >
+        {servicesCta}
+      </a>
+    </div>
   </div>
 </section>

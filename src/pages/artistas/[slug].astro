@@ -1,7 +1,10 @@
 ---
+export const prerender = true;
 import Base from '../../layouts/Base.astro';
+import { getPersonSchema, getBreadcrumbSchema } from '../../utils/structured-data';
 import fs from 'node:fs';
 import path from 'node:path';
+import yaml from 'js-yaml';
 
 interface Artist {
   slug: string;
@@ -60,37 +63,47 @@ export function getStaticPaths() {
 
 const { artist } = Astro.props as { artist: Artist };
 
-// Load gallery items for this artist
+// Load gallery items for this artist (YAML files)
 const galleryDir = path.join(process.cwd(), 'src/content/gallery');
 const galleryItems: GalleryItem[] = [];
 
 if (fs.existsSync(galleryDir)) {
-  const galleryFiles = fs.readdirSync(galleryDir).filter((f: string) => f.endsWith('.mdoc'));
+  const galleryFiles = fs.readdirSync(galleryDir).filter((f: string) => f.endsWith('.yaml') || f.endsWith('.yml'));
 
   for (const file of galleryFiles) {
     const raw = fs.readFileSync(path.join(galleryDir, file), 'utf-8');
-    const match = raw.match(/^---\n([\s\S]*?)\n---/);
-    if (!match) continue;
+    const data = yaml.load(raw) as Record<string, any>;
 
-    const fm = match[1];
-    const artistMatch = fm.match(/^artist:\s*(.+)$/m);
-    const fmArtist = artistMatch ? artistMatch[1].trim() : '';
-
-    if (fmArtist === artist.slug) {
-      const imageMatch = fm.match(/^image:\s*(.+)$/m);
-      const image = imageMatch ? imageMatch[1].trim().replace(/^['"]|['"]$/g, '') : '';
-      const altMatch = fm.match(/^alt:\s*(.+)$/m);
-      const alt = altMatch ? altMatch[1].trim() : artist.name;
-      if (image) {
-        galleryItems.push({ image, alt });
+    if (data.artist === artist.slug) {
+      if (data.image) {
+        galleryItems.push({
+          image: data.image,
+          alt: data.title || artist.name,
+        });
       }
     }
   }
 }
+
+const pageTitle = `${artist.name} - Tatuador en Neu Studio, Sevilla`;
+const pageDescription = `${artist.name}, artista en Neu Studio. Especialista en ${artist.specialties.join(', ')}. Reserva tu cita.`;
+
+const structuredData = [
+  getPersonSchema(artist),
+  getBreadcrumbSchema([
+    { name: 'Inicio', url: '/' },
+    { name: 'Artistas', url: '/artistas' },
+    { name: artist.name, url: `/artistas/${artist.slug}` },
+  ]),
+];
 ---
 
-<Base title={artist.name}>
-  <main class="pt-24 pb-16 px-6 md:px-12">
+<Base
+  title={pageTitle}
+  description={pageDescription}
+  structuredData={structuredData}
+>
+  <main class="pt-24 pb-16 px-6 md:px-12 max-w-7xl mx-auto">
     <!-- Artist header: two columns -->
     <div class="flex flex-col md:flex-row gap-8 md:gap-0">
       <!-- Left column: photo -->
@@ -100,6 +113,8 @@ if (fs.existsSync(galleryDir)) {
             src={artist.photo}
             alt={artist.name}
             class="w-full aspect-[3/4] object-cover"
+            width="400"
+            height="533"
             transition:name={'artist-' + artist.slug}
           />
         ) : (
@@ -144,10 +159,10 @@ if (fs.existsSync(galleryDir)) {
         )}
 
         <a
-          href="/reservar"
+          href="/contacto"
           class="inline-block bg-brand-blue text-white font-body text-sm px-8 py-4 mt-8 hover:bg-brand-blue-hover transition-colors duration-300"
         >
-          Reservar con {artist.name}
+          Contactar
         </a>
       </div>
     </div>
@@ -168,6 +183,9 @@ if (fs.existsSync(galleryDir)) {
               <img
                 src={item.image}
                 alt={item.alt}
+                loading="lazy"
+                width="400"
+                height="400"
                 class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
               />
             </div>

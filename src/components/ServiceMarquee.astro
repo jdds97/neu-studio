@@ -1,0 +1,57 @@
+---
+import { getSingleton } from '../utils/content';
+
+const home = getSingleton<Record<string, string>>('home');
+const marqueeRaw = home.marqueeItems || 'Fineline, Realismo, Blackwork, Color, Composición, Cover-up, Microrealismo, Freehand, Lettering, Geométrico, Neotradicional, Minimalista';
+const services = marqueeRaw.split(',').map((s: string) => s.trim()).filter(Boolean);
+---
+
+<div class="relative overflow-hidden bg-brand-blue py-3" aria-hidden="true">
+  <!-- Fade edges -->
+  <div class="absolute left-0 top-0 bottom-0 w-16 z-10 bg-gradient-to-r from-brand-blue to-transparent pointer-events-none"></div>
+  <div class="absolute right-0 top-0 bottom-0 w-16 z-10 bg-gradient-to-l from-brand-blue to-transparent pointer-events-none"></div>
+
+  <div class="marquee-track flex whitespace-nowrap">
+    {/* Duplicate the list 4 times for seamless loop */}
+    {[...Array(4)].map(() => (
+      <div class="flex items-center shrink-0">
+        {services.map((service: string) => (
+          <span class="flex items-center">
+            <span class="font-accent text-[0.7rem] md:text-xs tracking-[0.25em] uppercase text-white/90 px-6 md:px-8">
+              {service}
+            </span>
+            <span class="w-1 h-1 rounded-full bg-white/40 shrink-0"></span>
+          </span>
+        ))}
+      </div>
+    ))}
+  </div>
+</div>
+
+<style is:global>
+  .marquee-track {
+    animation: marqueeScroll 15s linear infinite;
+    will-change: transform;
+  }
+
+  @keyframes marqueeScroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-25%);
+    }
+  }
+
+  /* Pause on hover */
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none;
+    }
+  }
+</style>

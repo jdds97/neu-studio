@@ -1,10 +1,16 @@
 ---
+export const prerender = true;
 import Base from '../layouts/Base.astro';
 import GalleryFilter from '../components/GalleryFilter.astro';
 import GalleryGrid from '../components/GalleryGrid.astro';
+import { PAGE_SEO } from '../utils/seo-config';
+import { getBreadcrumbSchema } from '../utils/structured-data';
+import { getSingleton } from '../utils/content';
 import fs from 'node:fs';
 import path from 'node:path';
 import yaml from 'js-yaml';
+
+const galleryPage = getSingleton<Record<string, string>>('gallery-page');
 
 // Read gallery items from YAML files
 const galleryDir = path.join(process.cwd(), 'src/content/gallery');
@@ -27,26 +33,40 @@ try {
 } catch {
   // Gallery directory empty or unreadable — items stays empty
 }
+
+const breadcrumb = getBreadcrumbSchema([
+  { name: 'Inicio', url: '/' },
+  { name: 'Galeria', url: '/galeria' },
+]);
 ---
 
-<Base title="Galeria">
+<Base
+  title={PAGE_SEO.galeria.title}
+  description={PAGE_SEO.galeria.description}
+  structuredData={breadcrumb}
+>
   <main class="pt-24 pb-16 px-6 md:px-12 max-w-7xl mx-auto">
-    <span class="font-accent text-xs tracking-wide-label uppercase text-brand-gray block mb-3">
-      Galeria
-    </span>
-    <h1 class="font-display text-3xl md:text-5xl tracking-tight-display text-brand-dark mb-10">
-      Nuestros trabajos
-    </h1>
+    <div class="mb-12">
+      <span class="font-accent text-xs tracking-wide-label uppercase text-brand-gray block mb-3">
+        {galleryPage.label || 'Galería'}
+      </span>
+      <h1 class="font-display text-3xl md:text-5xl tracking-tight-display text-brand-dark">
+        {galleryPage.title || 'Nuestros trabajos'}
+      </h1>
+      <p class="font-body text-sm text-brand-gray mt-4 max-w-lg">
+        {galleryPage.description || 'Explora los trabajos de nuestros artistas. Cada pieza es única y personalizada.'}
+      </p>
+    </div>
 
     {items.length > 0 ? (
       <>
         <GalleryFilter />
-        <GalleryGrid items={items} />
+        <GalleryGrid items={items} initialCount={12} />
       </>
     ) : (
       <div class="text-center py-24">
         <p class="font-accent text-sm tracking-wide-label uppercase text-brand-gray">
-          Proximamente subieremos nuestros trabajos
+          {galleryPage.emptyState || 'Próximamente subiremos nuestros trabajos'}
         </p>
       </div>
     )}

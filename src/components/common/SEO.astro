@@ -1,0 +1,71 @@
+---
+import { SEO_METADATA, SITE_URL, BUSINESS_INFO } from '../../utils/seo-config';
+
+interface Props {
+  title: string;
+  description?: string;
+  canonical?: string;
+  image?: string;
+  type?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = 'Neu Studio - Estudio de tatuaje en Dos Hermanas, Sevilla. Tatuajes personalizados, fineline, realismo y mas.',
+  canonical,
+  image = '/images/og-default.jpg',
+  type = 'website',
+  noindex = false,
+} = Astro.props;
+
+const canonicalURL = canonical ? new URL(canonical, SITE_URL) : new URL(Astro.url.pathname, Astro.site);
+const imageURL = new URL(image, Astro.site);
+const fullTitle = title.includes('Neu Studio') ? title : `${title} | Neu Studio`;
+---
+
+<!-- Primary Meta Tags -->
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<meta name="keywords" content={SEO_METADATA.keywords} />
+<meta name="author" content={SEO_METADATA.author} />
+<meta name="robots" content={noindex ? 'noindex, nofollow' : SEO_METADATA.robots} />
+<meta name="theme-color" content={SEO_METADATA.themeColor} />
+<meta name="generator" content={Astro.generator} />
+
+<!-- Canonical -->
+<link rel="canonical" href={canonicalURL} />
+
+<!-- Favicons -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+
+<!-- Open Graph -->
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:image" content={imageURL} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content="es_ES" />
+<meta property="og:site_name" content={BUSINESS_INFO.name} />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageURL} />
+
+<!-- Geo -->
+<meta name="geo.region" content="ES-SE" />
+<meta name="geo.placename" content="Dos Hermanas" />
+<meta name="geo.position" content={`${BUSINESS_INFO.geo.lat};${BUSINESS_INFO.geo.lng}`} />
+<meta name="ICBM" content={`${BUSINESS_INFO.geo.lat}, ${BUSINESS_INFO.geo.lng}`} />
+
+<!-- Preload fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
