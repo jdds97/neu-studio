@@ -41,7 +41,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         Authorization: `Bearer ${resendKey}`,
       },
       body: JSON.stringify({
-        from: 'Neu Studio <info@send.neustudio.es>',
+        from: 'Neu Studio <info@neustudio.es>',
         to: contactEmail,
         subject: `Contacto web: ${name}`,
         html: `<h2>Nuevo mensaje desde la web</h2>
