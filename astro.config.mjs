@@ -18,8 +18,19 @@ export default defineConfig({
         !page.includes('/privacidad') &&
         !page.includes('/cookies'),
       changefreq: 'weekly',
-      priority: 0.7,
       lastmod: new Date(),
+      serialize: (item) => {
+        if (item.url === 'https://neustudio.es/') {
+          item.priority = 1.0;
+        } else if (item.url.includes('/contacto') || item.url.includes('/reservar')) {
+          item.priority = 0.9;
+        } else if (item.url.includes('/artistas/') && item.url !== 'https://neustudio.es/artistas/') {
+          item.priority = 0.7;
+        } else {
+          item.priority = 0.8;
+        }
+        return item;
+      },
     }),
     react(),
     keystatic(),

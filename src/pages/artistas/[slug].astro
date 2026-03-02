@@ -159,10 +159,10 @@ const structuredData = [
         )}
 
         <a
-          href="/contacto"
+          href={`/contacto?artista=${encodeURIComponent(artist.name)}`}
           class="inline-block bg-brand-blue text-white font-body text-sm px-8 py-4 mt-8 hover:bg-brand-blue-hover transition-colors duration-300"
         >
-          Contactar
+          Reservar con {artist.name}
         </a>
       </div>
     </div>

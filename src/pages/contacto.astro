@@ -230,6 +230,16 @@ const year = new Date().getFullYear();
   const successMsg = document.getElementById('success-msg');
   const errorMsg = document.getElementById('error-msg');
 
+  // Pre-rellenar mensaje si viene de una pagina de artista
+  const params = new URLSearchParams(window.location.search);
+  const artista = params.get('artista');
+  if (artista && form) {
+    const msgField = form.querySelector('#message') as HTMLTextAreaElement | null;
+    if (msgField && !msgField.value) {
+      msgField.value = `Hola, me gustaría reservar una cita con ${artista}.`;
+    }
+  }
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!submitBtn) return;
