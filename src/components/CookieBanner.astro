@@ -1,0 +1,83 @@
+---
+// RGPD/LSSI-CE compliant cookie consent banner
+---
+
+<div
+  id="cookie-banner"
+  class="fixed bottom-0 left-0 right-0 z-50 hidden"
+  role="dialog"
+  aria-label="Consentimiento de cookies"
+>
+  <div class="bg-brand-dark border-t border-brand-border/20 px-6 py-5 md:px-12">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      <p class="font-body text-sm text-white/80 flex-1">
+        Utilizamos cookies propias y de terceros para el correcto funcionamiento del sitio web.
+        Puedes obtener más información en nuestra
+        <a href="/cookies" class="text-brand-blue hover:underline">política de cookies</a>.
+      </p>
+      <div class="flex gap-3 shrink-0">
+        <button
+          id="cookie-reject"
+          class="font-body text-xs text-white/60 px-5 py-2.5 border border-white/20 hover:border-white/40 transition-colors"
+        >
+          Rechazar
+        </button>
+        <button
+          id="cookie-accept"
+          class="font-body text-xs text-white bg-brand-blue px-5 py-2.5 hover:bg-brand-blue-hover transition-colors"
+        >
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initCookieBanner() {
+    const banner = document.getElementById('cookie-banner');
+    const acceptBtn = document.getElementById('cookie-accept');
+    const rejectBtn = document.getElementById('cookie-reject');
+
+    if (!banner || !acceptBtn || !rejectBtn) return;
+
+    const consent = localStorage.getItem('cookie-consent');
+
+    if (!consent) {
+      banner.classList.remove('hidden');
+    }
+
+    acceptBtn.addEventListener('click', () => {
+      localStorage.setItem('cookie-consent', 'accepted');
+      banner.classList.add('hidden');
+      // Load analytics if consent given
+      loadAnalytics();
+    });
+
+    rejectBtn.addEventListener('click', () => {
+      localStorage.setItem('cookie-consent', 'rejected');
+      banner.classList.add('hidden');
+    });
+
+    // If already accepted, load analytics
+    if (consent === 'accepted') {
+      loadAnalytics();
+    }
+  }
+
+  function loadAnalytics() {
+    // Cloudflare Web Analytics (privacy-friendly, no cookies)
+    if (document.querySelector('script[data-cf-beacon]')) return;
+    const script = document.createElement('script');
+    script.defer = true;
+    script.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+    script.dataset.cfBeacon = '{"token": ""}';
+    // Token will be set when Cloudflare Web Analytics is enabled
+    // For now, this is a placeholder - enable in Cloudflare Dashboard > Analytics > Web Analytics
+    document.head.appendChild(script);
+  }
+
+  // Run on page load and after view transitions
+  initCookieBanner();
+  document.addEventListener('astro:after-swap', initCookieBanner);
+</script>

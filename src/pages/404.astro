@@ -1,0 +1,30 @@
+---
+export const prerender = true;
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Página no encontrada - Neu Studio" noindex={true}>
+  <main class="pt-24 pb-16 px-6 md:px-12 min-h-[70vh] flex flex-col items-center justify-center text-center">
+    <span class="font-accent text-xs tracking-wider-label uppercase text-brand-gray mb-4">Error 404</span>
+    <h1 class="font-display text-[clamp(4rem,10vw,8rem)] tracking-tight-display leading-none">
+      404
+    </h1>
+    <p class="font-body text-sm text-brand-gray mt-4 max-w-md">
+      La página que buscas no existe o ha sido movida.
+    </p>
+    <div class="flex gap-4 mt-8">
+      <a
+        href="/"
+        class="inline-block bg-brand-blue text-white font-body text-sm px-8 py-4 hover:bg-brand-blue-hover transition-colors duration-300"
+      >
+        Volver al inicio
+      </a>
+      <a
+        href="/contacto"
+        class="inline-block border border-brand-border text-brand-dark font-body text-sm px-8 py-4 hover:border-brand-dark transition-colors duration-300"
+      >
+        Contacto
+      </a>
+    </div>
+  </main>
+</Base>
