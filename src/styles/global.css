@@ -1,4 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family=Michroma&family=Outfit:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap');
+/* Self-hosted fonts — eliminates Google Fonts round-trips */
+@font-face {
+  font-family: 'Michroma';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/michroma-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 300 600;
+  font-display: swap;
+  src: url('/fonts/outfit-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-latin.woff2') format('woff2');
+}
 
 @tailwind base;
 @tailwind components;
